@@ -205,16 +205,20 @@
                 </div>
 
                 <div class="mt-5 pt-4 border-t border-slate-100">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Settlement Protocol</label>
-                    <select id="payment-method" class="w-full text-xs p-3 border border-slate-200 rounded-xl bg-slate-50/50 font-semibold focus:outline-none focus:border-emerald-500 transition-all mb-3">
-                        <option value="Cash on Delivery (COD)">Cash on Delivery (COD)</option>
-                        <option value="Bank Transfer (CBE / Telebirr)">Bank Transfer (Deposit Receipt)</option>
-                    </select>
-                    <input type="file" id="receipt-upload" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
+                   <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Settlement Protocol</label>
+    
+<select id="payment-method" onchange="toggleReceiptInput(this.value)" class="w-full text-xs p-3 border border-slate-200 rounded-xl bg-slate-50/50 font-semibold focus:outline-none focus:border-emerald-500 transition-all mb-3">
+    <option value="Cash on Delivery (COD)">Cash on Delivery (COD)</option>
+    <option value="Bank Transfer">Bank Transfer (Deposit Receipt)</option>
+</select>
+
+<div id="receipt-upload-container" class="hidden">
+    <input type="file" id="receipt-upload" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
+</div>
+</div>
                 </div>
 
-              
-        </section> <button id="submit-order-btn" onclick="dispatchOrderDirectToTelegram()" class="w-full mt-5 bg-emerald-600 text-white font-bold py-4 px-4 rounded-xl shadow-md hover:bg-emerald-700 transition-all text-xs uppercase tracking-wider">
+                <button id="submit-order-btn" onclick="dispatchOrderDirectToTelegram()" class="w-full mt-5 bg-emerald-600 text-white font-bold py-4 px-4 rounded-xl shadow-md hover:bg-emerald-700 transition-all text-xs uppercase tracking-wider">
                     🚀 Submit Order to Telegram Desk
                 </button>
             </div>
@@ -378,6 +382,14 @@
             const fileUploadFieldReference = document.getElementById('receipt-upload');
             const submitActionButton = document.getElementById('submit-order-btn');
 
+            if (
+                customerSelectedPayment === 'Bank Transfer' &&
+                (!fileUploadFieldReference.files || !fileUploadFieldReference.files[0])
+            ) {
+                alert('Please upload your transfer receipt.');
+                return;
+            }
+
             if (!pharmacyBusinessName || !contactMobileNumber || !geographicAreaLocation) {
                 alert("Please complete the logistics form tracking inputs.");
                 return;
@@ -450,6 +462,16 @@
                 submitActionButton.innerText = "🚀 Submit Order to Telegram Desk";
             }
         }
-    </script>
+    </script> 
+   function toggleReceiptInput(method) {
+    const container = document.getElementById('receipt-upload-container');
+    
+    // Check if the selected value is exactly 'Bank Transfer'
+    if (method === 'Bank Transfer') {
+        container.classList.remove('hidden'); // Show the box
+    } else {
+        container.classList.add('hidden');    // Hide the box for COD
+    }
+}
 </body>
 </html>
