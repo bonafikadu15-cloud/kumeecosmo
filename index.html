@@ -3,141 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kumee Cosmo — Premium TAFLEN Wholesale</title>
+    <title>Kumee Cosmo Wholesale</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        html { scroll-behavior: smooth; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f5f9; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col pb-12">
+<body class="bg-slate-50 p-4">
 
-    <div id="admin-panel" class="hidden bg-slate-900 text-white p-4 border-b-2 border-amber-500 z-50 shadow-lg">
-        <h2 class="text-sm font-black tracking-wider text-amber-400 mb-2">🛠️ OWNER ADMINISTRATIVE CONSOLE</h2>
-        
-        <div class="bg-slate-800 p-3 rounded-lg border border-slate-700 text-[10px] mb-4">
-            <p class="font-bold text-amber-300">HOW TO UPDATE PRICES:</p>
-            <ol class="list-decimal ml-4 space-y-1 text-slate-300">
-                <li>Go to your GitHub repository and open <code class="bg-slate-900 px-1">index.html</code>.</li>
-                <li>Find the product's <code>&lt;div&gt;</code> by its ID (e.g., <code>id="card-p1"</code>).</li>
-                <li>Change the <code>data-price</code> value AND the price text inside the <code>&lt;span&gt;</code>.</li>
-                <li>Click <b>"Commit changes"</b> to save. Your site updates automatically!</li>
-            </ol>
+    <!-- ADMIN CONSOLE (Visible only to you) -->
+    <div id="admin-panel" class="hidden bg-slate-900 text-white p-4 rounded-xl mb-6 shadow-xl">
+        <h2 class="text-amber-400 font-bold mb-2">🛠️ ADMIN: Product Editor</h2>
+        <div class="grid grid-cols-2 gap-2">
+            <input id="edit-name" placeholder="Name" class="text-black p-1 rounded">
+            <input id="edit-price" placeholder="Price" type="number" class="text-black p-1 rounded">
+            <button onclick="addProduct()" class="col-span-2 bg-emerald-600 p-2 rounded">Add/Update Product</button>
         </div>
-        <div id="admin-controls-grid" class="flex flex-wrap gap-2"></div>
     </div>
 
-    <header class="bg-emerald-950 text-white shadow-sm border-b border-emerald-800/50 backdrop-blur-md bg-opacity-95 sticky top-0 z-40">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div>
-                <h1 class="text-xl font-extrabold tracking-tight text-emerald-400">✨ KUMEE COSMO</h1>
-                <p class="text-[11px] text-emerald-300/70 font-medium tracking-wide uppercase">TAFLEN Products Distributor</p>
-            </div>
-            <a href="#checkout-section" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-all shadow-sm">
-                🛒 Order Sheet (<span id="header-cart-count">0</span>)
-            </a>
-        </div>
-    </header>
-
-    <main class="max-w-6xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <section class="lg:col-span-2 space-y-8">
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5 border-b pb-3">TAFLEN Paraffin Series</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div id="card-p1" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200" data-id="p1" data-name="Paraffin 500ml" data-price="320">
-                        <h4 class="font-bold text-sm">Paraffin 500ml</h4>
-                        <div class="flex items-center justify-between pt-3 mt-3 border-t">
-                            <span class="text-sm font-extrabold text-slate-900">320 <span class="text-[10px] text-slate-400">ETB</span></span>
-                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-bold border rounded-lg text-xs outline-none">
-                        </div>
-                    </div>
-                    </div>
-            </div>
-        </section>
-
-        <section id="checkout-section" class="space-y-4">
-            <div class="bg-white rounded-3xl p-6 shadow-md border sticky top-24">
-                <h2 class="text-xs font-bold text-slate-900 mb-4 uppercase">📋 Selected Manifest</h2>
-                <div id="dynamic-cart-list" class="space-y-2 max-h-48 overflow-y-auto bg-slate-50 p-3 rounded-2xl">
-                    <p class="text-center text-xs text-slate-400 py-8">No items selected.</p>
-                </div>
-                <div id="cart-running-total-row" class="hidden flex justify-between items-center bg-emerald-50 text-emerald-900 rounded-xl px-4 py-3 mt-2 font-bold text-xs">
-                    <span>Total:</span>
-                    <span id="cart-running-total-value">0 ETB</span>
-                </div>
-                
-                <div class="space-y-3 mt-4">
-                    <input type="text" id="client-name" placeholder="Pharmacy Name" class="w-full text-xs p-3 border rounded-xl" required>
-                    <input type="tel" id="client-phone" placeholder="Mobile Number" class="w-full text-xs p-3 border rounded-xl" required>
-                    <input type="text" id="client-location" placeholder="Location/Subcity" class="w-full text-xs p-3 border rounded-xl" required>
-                    <select id="payment-method" class="w-full text-xs p-3 border rounded-xl">
-                        <option value="COD">Cash on Delivery</option>
-                        <option value="Transfer">Bank Transfer</option>
-                    </select>
-                </div>
-
-                <button id="submit-order-btn" onclick="dispatchOrderDirectToTelegram()" class="w-full mt-5 bg-emerald-600 text-white font-bold py-4 rounded-xl text-xs uppercase">
-                    🚀 Submit Order
-                </button>
-            </div>
-        </section>
-    </main>
+    <!-- CUSTOMER STOREFRONT -->
+    <div id="storefront" class="space-y-4">
+        <h1 class="text-2xl font-black text-emerald-950">✨ Kumee Cosmo</h1>
+        <div id="product-list" class="grid gap-4"></div>
+    </div>
 
     <script>
-        // CORE SETTINGS
-        const SECURE_TELEGRAM_BOT_TOKEN = "8902266701:AAHHD0jFSPhHoIAZnffPXxMRH90cUZT9URo"; 
-        const DESTINATION_CHAT_ID = "5966033751"; 
-        const MASTER_OWNER_ID = 5966033751;
+        // 1. Initialize data from storage or default
+        let products = JSON.parse(localStorage.getItem('kumee_products')) || [
+            { id: "p1", name: "Paraffin 500ml", price: 320 },
+            { id: "p2", name: "Baby Jelly 400g", price: 350 }
+        ];
 
-        const shoppingCart = {};
-
-        // INITIALIZATION
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand();
-            if (window.Telegram.WebApp.initDataUnsafe.user?.id === MASTER_OWNER_ID) {
-                document.getElementById('admin-panel').classList.remove('hidden');
-            }
-        }
-
-        function handleQuantityChange(inputElement) {
-            const container = inputElement.closest('[data-id]');
-            const id = container.dataset.id;
-            const price = parseInt(container.dataset.price);
-            const qty = parseInt(inputElement.value) || 0;
-
-            if (qty > 0) {
-                shoppingCart[id] = { name: container.dataset.name, price: price, quantity: qty, calculatedItemTotal: price * qty };
-            } else {
-                delete shoppingCart[id];
-            }
-            updateCartUI();
-        }
-
-        function updateCartUI() {
-            let total = 0;
-            const list = document.getElementById('dynamic-cart-list');
+        // 2. Render Products
+        function renderStore() {
+            const list = document.getElementById('product-list');
             list.innerHTML = "";
-            for (let id in shoppingCart) {
-                total += shoppingCart[id].calculatedItemTotal;
-                list.innerHTML += `<div class="flex justify-between text-xs p-2 bg-white rounded-lg"><span>${shoppingCart[id].name} (x${shoppingCart[id].quantity})</span><span>${shoppingCart[id].calculatedItemTotal} ETB</span></div>`;
-            }
-            document.getElementById('cart-running-total-value').innerText = total + " ETB";
-            document.getElementById('cart-running-total-row').classList.toggle('hidden', total === 0);
-            document.getElementById('header-cart-count').innerText = Object.keys(shoppingCart).length;
+            products.forEach(p => {
+                list.innerHTML += `
+                    <div class="bg-white p-4 rounded-xl shadow flex justify-between items-center">
+                        <div>
+                            <p class="font-bold">${p.name}</p>
+                            <p class="text-emerald-600 font-mono">${p.price} ETB</p>
+                        </div>
+                        <input type="number" class="w-16 border rounded text-center" placeholder="Qty">
+                    </div>`;
+            });
         }
 
-        async function dispatchOrderDirectToTelegram() {
-            const name = document.getElementById('client-name').value;
-            if (!name) { alert("Please fill in pharmacy details."); return; }
-            
-            // Simplified logic for brevity in this full template
-            alert("Manifest transmitted to Kumee Cosmo desk.");
-            window.Telegram.WebApp.close();
+        // 3. Admin Function to Add/Update
+        function addProduct() {
+            const name = document.getElementById('edit-name').value;
+            const price = parseInt(document.getElementById('edit-price').value);
+            if (!name || !price) return;
+
+            const existing = products.find(p => p.name === name);
+            if (existing) {
+                existing.price = price;
+            } else {
+                products.push({ id: "p" + Date.now(), name, price });
+            }
+
+            localStorage.setItem('kumee_products', JSON.stringify(products));
+            renderStore();
+            alert("Updated for customers!");
         }
+
+        // Check if Admin
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        if (tg.initDataUnsafe.user?.id === 5966033751) {
+            document.getElementById('admin-panel').classList.remove('hidden');
+        }
+
+        renderStore();
     </script>
 </body>
 </html>
