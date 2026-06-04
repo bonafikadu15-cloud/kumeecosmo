@@ -2,155 +2,455 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kumee Cosmo — Premium TAFLEN Wholesale</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         html { scroll-behavior: smooth; }
-        body { font-family: 'Inter', system-ui, sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); }
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased pb-24">
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col pb-12">
 
-    <div id="admin-panel" class="hidden bg-slate-900 text-white p-4 border-b-4 border-amber-500 sticky top-0 z-50 shadow-xl">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-[10px] font-black text-amber-400 uppercase tracking-widest mb-3">🛠️ Administrative Console</h2>
-            <div id="admin-controls-grid" class="flex flex-wrap gap-2"></div>
+    <div id="admin-panel" class="hidden bg-slate-900 text-white p-4 border-b-2 border-amber-500 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+            <div>
+                <h2 class="text-sm font-black tracking-wider text-amber-400 flex items-center gap-2">
+                    🛠️ OWNER ADMINISTRATIVE CONSOLE
+                </h2>
+                <p class="text-[11px] text-slate-400">Tap any item pill below to toggle client-side visibility in real-time.</p>
+            </div>
+            <div id="admin-controls-grid" class="flex flex-wrap gap-2 max-w-xl"></div>
         </div>
     </div>
 
-    <header class="sticky top-0 z-40 glass border-b border-slate-200">
-        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+    <header class="bg-emerald-950 text-white shadow-sm border-b border-emerald-800/50 backdrop-blur-md bg-opacity-95 sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
             <div>
-                <h1 class="text-lg font-extrabold text-emerald-950 tracking-tight">✨ KUMEE COSMO</h1>
-                <p class="text-[9px] font-bold text-emerald-700 uppercase tracking-widest">Authorized Distributor</p>
+                <h1 class="text-xl font-extrabold tracking-tight flex items-center gap-2 text-emerald-400">
+                    ✨ KUMEE COSMO
+                </h1>
+                <p class="text-[11px] text-emerald-300/70 font-medium tracking-wide uppercase">TAFLEN Products Authorized Distributor</p>
             </div>
-            <a href="#checkout-section" class="bg-emerald-600 text-white font-bold py-2 px-4 rounded-xl text-[11px] shadow-lg shadow-emerald-200 flex items-center gap-2">
-                🛒 <span id="header-cart-count">0 Items</span>
+            <a href="#checkout-section" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-all duration-200 shadow-sm flex items-center gap-2 hover:scale-[1.02]">
+                <span>🛒 Order Sheet</span>
+                <span id="header-cart-count" class="bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded-lg text-[11px] font-black">0 Items</span>
             </a>
         </div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-4 mt-6 space-y-8">
+    <main class="max-w-6xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8 flex-grow w-full">
         
-        <section id="catalog" class="space-y-8">
-            <div class="space-y-4">
-                <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">TAFLEN Paraffin Series</h3>
-                <div class="grid grid-cols-2 gap-3" id="catalog-grid">
-                    <div id="card-p1" class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm" data-id="p1" data-name="Paraffin 500ml" data-price="320">
-                        <h4 class="font-bold text-xs mb-1">Paraffin 500ml</h4>
-                        <p class="text-[10px] text-emerald-600 font-bold mb-3">320 ETB</p>
-                        <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-center font-bold text-sm outline-none focus:border-emerald-500">
+        <section class="lg:col-span-2 space-y-8">
+            <div class="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 flex items-center gap-3 text-xs text-emerald-950 font-medium shadow-sm">
+                <span class="text-base text-emerald-600">⚡</span>
+                <p>Adjust wholesale requirements below. Your running invoice sheet and totals calculate natively in real time.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-5 border-b border-slate-100 pb-3">
+                    <span class="w-1.5 h-4 bg-emerald-600 rounded-full inline-block"></span> TAFLEN Paraffin Series
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div id="card-p1" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p1" data-name="Paraffin 500ml" data-price="320">
+                        <h4 class="font-bold text-sm text-slate-900">Paraffin 500ml</h4>
+                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+                            <span class="text-sm font-extrabold text-slate-900">320 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
+                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
+                        </div>
                     </div>
-                    <div id="card-p2" class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm" data-id="p2" data-name="Paraffin 330ml" data-price="240">
-                        <h4 class="font-bold text-xs mb-1">Paraffin 330ml</h4>
-                        <p class="text-[10px] text-emerald-600 font-bold mb-3">240 ETB</p>
-                        <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-center font-bold text-sm outline-none focus:border-emerald-500">
+                    <div id="card-p2" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p2" data-name="Paraffin 330ml" data-price="240">
+                        <h4 class="font-bold text-sm text-slate-900">Paraffin 330ml</h4>
+                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+                            <span class="text-sm font-extrabold text-slate-900">240 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
+                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
+                        </div>
+                    </div>
+                    <div id="card-p3" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p3" data-name="Paraffin 300ml" data-price="230">
+                        <h4 class="font-bold text-sm text-slate-900">Paraffin 300ml</h4>
+                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+                            <span class="text-sm font-extrabold text-slate-900">230 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
+                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
+                        </div>
+                    </div>
+                    <div id="card-p4" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p4" data-name="Paraffin 250ml" data-price="190">
+                        <h4 class="font-bold text-sm text-slate-900">Paraffin 250ml</h4>
+                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+                            <span class="text-sm font-extrabold text-slate-900">190 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
+                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
+                        </div>
+                    </div>
+                    <div id="card-p5" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p5" data-name="Paraffin 200ml" data-price="180">
+                        <h4 class="font-bold text-sm text-slate-900">Paraffin 200ml</h4>
+                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+                            <span class="text-sm font-extrabold text-slate-900">180 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
+                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
+                        </div>
+                    </div>
+                    <div id="card-p6" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p6" data-name="Paraffin Heavy 1L" data-price="650">
+                        <h4 class="font-bold text-sm text-slate-900">Paraffin Heavy 1 Litre</h4>
+                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+                            <span class="text-sm font-extrabold text-slate-900">650 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
+                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-5 border-b border-slate-100 pb-3">
+                    <span class="w-1.5 h-4 bg-emerald-600 rounded-full inline-block"></span> TAFLEN Baby Protection Line
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div id="card-p7" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p7" data-name="Baby Oil 400ml" data-price="300">
+                        <h4 class="font-bold text-sm text-slate-900">Baby Oil 400ml</h4>
+                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+                            <span class="text-sm font-extrabold text-slate-900">300 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
+                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
+                        </div>
+                    </div>
+                    <div id="card-p8" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p8" data-name="Baby Oil 200ml" data-price="180">
+                        <h4 class="font-bold text-sm text-slate-900">Baby Oil 200ml</h4>
+                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+                            <span class="text-sm font-extrabold text-slate-900">180 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
+                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
+                        </div>
+                    </div>
+                    <div id="card-p9" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p9" data-name="Baby Jelly 400g" data-price="350">
+                        <h4 class="font-bold text-sm text-slate-900">Baby Jelly 400g</h4>
+                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+                            <span class="text-sm font-extrabold text-slate-900">350 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
+                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
+                        </div>
+                    </div>
+                    <div id="card-p10" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p10" data-name="Baby Jelly 350g" data-price="320">
+                        <h4 class="font-bold text-sm text-slate-900">Baby Jelly 350g</h4>
+                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+                            <span class="text-sm font-extrabold text-slate-900">320 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
+                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-5 border-b border-slate-100 pb-3">
+                    <span class="w-1.5 h-4 bg-emerald-600 rounded-full inline-block"></span> Protective Jelly & Glycerin Base
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div id="card-p11" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p11" data-name="Vaseline 300g" data-price="310">
+                        <h4 class="font-bold text-sm text-slate-900">Vaseline 300g</h4>
+                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+                            <span class="text-sm font-extrabold text-slate-900">310 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
+                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
+                        </div>
+                    </div>
+                    <div id="card-p12" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p12" data-name="Glycerin 200ml" data-price="135">
+                        <h4 class="font-bold text-sm text-slate-900">Glycerin 200ml</h4>
+                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+                            <span class="text-sm font-extrabold text-slate-900">135 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
+                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
+                        </div>
+                    </div>
+                    <div id="card-p13" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p13" data-name="96% Alcohol" data-price="480">
+                        <h4 class="font-bold text-sm text-slate-900">96% Medical Alcohol</h4>
+                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+                            <span class="text-sm font-extrabold text-slate-900">480 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
+                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="checkout-section" class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-            <h2 class="text-xs font-black uppercase tracking-wider mb-4 text-slate-500">📋 Selected Manifest</h2>
-            
-            <div id="dynamic-cart-list" class="space-y-2 mb-4">
-                <p class="text-center text-[11px] text-slate-400 italic py-4" id="empty-cart-message">No wholesale products chosen yet.</p>
-            </div>
+        <section id="checkout-section" class="space-y-4">
+            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 sticky top-24">
+                <h2 class="text-xs font-bold text-slate-900 mb-4 uppercase tracking-wider flex items-center justify-between">
+                    <span>📋 Selected Manifest</span>
+                    <span class="text-[11px] text-slate-400 lowercase font-normal" id="item-variety-count">0 lines selected</span>
+                </h2>
+                
+                <div id="dynamic-cart-list" class="space-y-2 max-h-48 overflow-y-auto border border-slate-100 rounded-2xl p-3 bg-slate-50/50">
+                    <p class="text-center text-xs text-slate-400 py-8 italic" id="empty-cart-message">No wholesale products chosen yet.</p>
+                </div>
 
-            <div class="space-y-3 pt-4 border-t border-slate-100">
-                <input type="text" id="client-name" placeholder="Pharmacy Name" class="w-full text-xs p-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-500">
-                <input type="tel" id="client-phone" placeholder="Mobile Number" class="w-full text-xs p-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-emerald-500">
-                <select id="payment-method" class="w-full text-xs p-3.5 bg-slate-50 border border-slate-200 rounded-xl">
-                    <option>Cash on Delivery (COD)</option>
-                    <option>Bank Transfer (CBE / Telebirr)</option>
-                </select>
-                <input type="file" id="receipt-upload" class="w-full text-[10px] p-2 file:bg-emerald-100 file:border-0 file:rounded-lg file:px-3 file:py-1">
-            </div>
+                <div id="cart-running-total-row" class="hidden flex justify-between items-center bg-emerald-50 text-emerald-900 rounded-xl px-4 py-3 border border-emerald-100 mt-2 mb-5 font-bold text-xs">
+                    <span>Selected Items Value:</span>
+                    <span id="cart-running-total-value" class="font-mono text-sm text-emerald-700">0 ETB</span>
+                </div>
 
-            <div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-100">
-                <span class="text-xs font-bold">Total:</span>
-                <span id="invoice-grand-total" class="text-lg font-black text-emerald-600">0 ETB</span>
-            </div>
+                <div class="space-y-3 mb-5">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Pharmacy Logistics Metadata</label>
+                    <input type="text" id="client-name" placeholder="Pharmacy / Retail Establishment Name" class="w-full text-xs p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-medium bg-slate-50/50 focus:bg-white transition-all" required>
+                    <input type="tel" id="client-phone" placeholder="Contact Mobile Number" class="w-full text-xs p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-medium bg-slate-50/50 focus:bg-white transition-all" required>
+                    <input type="text" id="client-location" placeholder="Specific Delivery Area / Subcity" class="w-full text-xs p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-medium bg-slate-50/50 focus:bg-white transition-all" required>
+                </div>
 
-            <button id="submit-order-btn" onclick="dispatchOrderDirectToTelegram()" class="w-full mt-4 bg-emerald-600 text-white font-bold py-4 rounded-xl active:scale-95 transition-transform uppercase text-[11px] tracking-widest">
-                Submit Order
-            </button>
+                <div class="border-t border-slate-100 pt-4 space-y-2 text-xs font-medium">
+                    <div class="flex justify-between text-slate-500">
+                        <span>Total Units Selected:</span>
+                        <span id="invoice-total-qty" class="font-mono text-slate-700 font-bold">0 Units</span>
+                    </div>
+                    <div class="flex justify-between text-slate-500">
+                        <span>Logistics Cost:</span>
+                        <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wide">Free Wholesale Delivery</span>
+                    </div>
+                    <div class="flex justify-between text-sm font-extrabold text-slate-900 pt-3 border-t border-dashed border-slate-200">
+                        <span>Grand Total Payable:</span>
+                        <span id="invoice-grand-total" class="text-emerald-600 text-base font-mono">0 ETB</span>
+                    </div>
+                </div>
+
+                <div class="mt-5 pt-4 border-t border-slate-100">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Settlement Protocol</label>
+                    <select id="payment-method" class="w-full text-xs p-3 border border-slate-200 rounded-xl bg-slate-50/50 font-semibold focus:outline-none focus:border-emerald-500 transition-all mb-3">
+                        <option value="Cash on Delivery (COD)">Cash on Delivery (COD)</option>
+                        <option value="Bank Transfer (CBE / Telebirr)">Bank Transfer (Deposit Receipt)</option>
+                    </select>
+                    <input type="file" id="receipt-upload" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
+                </div>
+
+                <button id="submit-order-btn" onclick="dispatchOrderDirectToTelegram()" class="w-full mt-5 bg-emerald-600 text-white font-bold py-4 px-4 rounded-xl shadow-md hover:bg-emerald-700 transition-all text-xs uppercase tracking-wider">
+                    🚀 Submit Order to Telegram Desk
+                </button>
+            </div>
+        </section> <button id="submit-order-btn" onclick="dispatchOrderDirectToTelegram()" class="w-full mt-5 bg-emerald-600 text-white font-bold py-4 px-4 rounded-xl shadow-md hover:bg-emerald-700 transition-all text-xs uppercase tracking-wider">
+                    🚀 Submit Order to Telegram Desk
+                </button>
+            </div>
         </section>
+        <footer class="mt-8 py-6 border-t border-slate-100 text-center">
+            <div class="space-y-1">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Kumee Cosmo © 2026</p>
+                <p class="text-[10px] text-slate-400">Authorized Wholesale Platform</p>
+                <p class="text-[11px] text-emerald-700 font-bold pt-2">
+                    Developed by 
+                    <a href="https://t.me/obamafike" target="_blank" class="underline hover:text-emerald-900 transition-colors">
+                        @obamafike
+                    </a>
+                </p>
+            </div>
+        </footer>
     </main>
 
     <script>
         const shoppingCart = {};
-        const SECURE_TELEGRAM_BOT_TOKEN = "8902266701:AAHHD0jFSPhHoIAZnffPXxMRH90cUZT9URo";
-        const DESTINATION_CHAT_ID = "5966033751";
+
+        // Inventory Reference Definition Map
+        const productCatalogIndex = [
+            { id: "p1", name: "Paraffin 500ml" },
+            { id: "p2", name: "Paraffin 330ml" },
+            { id: "p3", name: "Paraffin 300ml" },
+            { id: "p4", name: "Paraffin 250ml" },
+            { id: "p5", name: "Paraffin 200ml" },
+            { id: "p6", name: "Paraffin Heavy 1L" },
+            { id: "p7", name: "Baby Oil 400ml" },
+            { id: "p8", name: "Baby Oil 200ml" },
+            { id: "p9", name: "Baby Jelly 400g" },
+            { id: "p10", name: "Baby Jelly 350g" },
+            { id: "p11", name: "Vaseline 300g" },
+            { id: "p12", name: "Glycerin 200ml" },
+            { id: "p13", name: "96% Alcohol" }
+        ];
+
+        // SECURE TELEGRAM VALUES INJECTED
+        const SECURE_TELEGRAM_BOT_TOKEN = "8902266701:AAHHD0jFSPhHoIAZnffPXxMRH90cUZT9URo"; 
+        const DESTINATION_CHAT_ID = "5966033751"; 
         const MASTER_OWNER_ID = 5966033751;
 
-        if (window.Telegram?.WebApp) {
+        // Native Telegram Mini App Handshake Handlers
+        if (window.Telegram && window.Telegram.WebApp) {
             window.Telegram.WebApp.ready();
             window.Telegram.WebApp.expand();
+            
+            const userSessionData = window.Telegram.WebApp.initDataUnsafe;
+            if (userSessionData && userSessionData.user && userSessionData.user.id === MASTER_OWNER_ID) {
+                activateOwnerConsole();
+            }
+        }
+
+        function activateOwnerConsole() {
+            document.getElementById('admin-panel').classList.remove('hidden');
+            const targetControlsGrid = document.getElementById('admin-controls-grid');
+
+            productCatalogIndex.forEach(product => {
+                const togglerButton = document.createElement('button');
+                togglerButton.id = `btn-toggle-${product.id}`;
+                togglerButton.className = "bg-emerald-600 text-white font-bold text-[10px] px-2.5 py-1.5 rounded-lg border border-emerald-500 transition-all";
+                togglerButton.innerText = `🟢 ${product.name}`;
+                togglerButton.onclick = () => performStockToggle(product.id, product.name);
+                targetControlsGrid.appendChild(togglerButton);
+            });
+        }
+
+        function performStockToggle(productId, productName) {
+            const targetedProductCard = document.getElementById(`card-${productId}`);
+            const correspondingAdminButton = document.getElementById(`btn-toggle-${productId}`);
+
+            if (targetedProductCard.classList.contains('hidden')) {
+                targetedProductCard.classList.remove('hidden');
+                correspondingAdminButton.innerText = `🟢 ${productName}`;
+                correspondingAdminButton.className = "bg-emerald-600 text-white font-bold text-[10px] px-2.5 py-1.5 rounded-lg border border-emerald-500";
+            } else {
+                targetedProductCard.classList.add('hidden');
+                correspondingAdminButton.innerText = `🔴 Hidden: ${productName}`;
+                correspondingAdminButton.className = "bg-rose-900 text-rose-200 font-bold text-[10px] px-2.5 py-1.5 rounded-lg border border-rose-700";
+                
+                if (shoppingCart[productId]) {
+                    delete shoppingCart[productId];
+                    targetedProductCard.querySelector('input').value = 0;
+                    executeInvoicePipeline();
+                }
+            }
         }
 
         function handleQuantityChange(inputElement) {
-            const container = inputElement.closest('[data-id]');
-            const id = container.dataset.id;
-            const qty = parseInt(inputElement.value) || 0;
-            
-            if (qty > 0) {
-                shoppingCart[id] = { 
-                    name: container.dataset.name, 
-                    price: parseInt(container.dataset.price), 
-                    qty: qty 
+            const productContainer = inputElement.closest('[data-id]');
+            const productId = productContainer.dataset.id;
+            const productName = productContainer.dataset.name;
+            const productPrice = parseInt(productContainer.dataset.price);
+            const inputQuantity = parseInt(inputElement.value) || 0;
+
+            if (inputQuantity > 0) {
+                shoppingCart[productId] = {
+                    name: productName,
+                    price: productPrice,
+                    quantity: inputQuantity,
+                    calculatedItemTotal: productPrice * inputQuantity
                 };
             } else {
-                delete shoppingCart[id];
+                delete shoppingCart[productId];
             }
-            updateUI();
+            executeInvoicePipeline();
         }
 
-        function updateUI() {
-            const list = document.getElementById('dynamic-cart-list');
-            const emptyMsg = document.getElementById('empty-cart-message');
-            let total = 0, items = 0;
+        function executeInvoicePipeline() {
+            const cartContainerList = document.getElementById('dynamic-cart-list');
+            const emptyMsgPlaceholder = document.getElementById('empty-cart-message');
+            const cartRunningTotalRow = document.getElementById('cart-running-total-row');
+            const cartRunningTotalValue = document.getElementById('cart-running-total-value');
             
-            list.innerHTML = "";
-            for (let id in shoppingCart) {
-                let item = shoppingCart[id];
-                total += (item.price * item.qty);
-                items += item.qty;
-                list.innerHTML += `<div class="flex justify-between text-[11px] bg-slate-50 p-2 rounded-lg font-bold"><span>${item.name} x ${item.qty}</span><span>${item.price * item.qty} ETB</span></div>`;
+            let accumulatedItemCount = 0;
+            let computedGrandTotal = 0;
+            let varietyCounter = 0;
+
+            const liveRows = cartContainerList.querySelectorAll('.cart-item-row');
+            liveRows.forEach(row => row.remove());
+
+            for (const keyId in shoppingCart) {
+                varietyCounter++;
+                const itemData = shoppingCart[keyId];
+                accumulatedItemCount += itemData.quantity;
+                computedGrandTotal += itemData.calculatedItemTotal;
+
+                const itemRowHTML = document.createElement('div');
+                itemRowHTML.className = "cart-item-row flex items-center justify-between text-xs bg-white p-3 rounded-xl border border-slate-100 font-medium shadow-sm";
+                itemRowHTML.innerHTML = `
+                    <div class="max-w-[70%]">
+                        <p class="font-bold text-slate-800 truncate">${itemData.name}</p>
+                        <p class="text-[10px] text-slate-400">Qty: ${itemData.quantity} × ${itemData.price} ETB</p>
+                    </div>
+                    <span class="font-mono font-bold text-slate-700">${itemData.calculatedItemTotal.toLocaleString()} ETB</span>
+                `;
+                cartContainerList.appendChild(itemRowHTML);
             }
-            
-            emptyMsg.style.display = items > 0 ? 'none' : 'block';
-            document.getElementById('header-cart-count').innerText = `${items} Items`;
-            document.getElementById('invoice-grand-total').innerText = `${total.toLocaleString()} ETB`;
+
+            if (varietyCounter > 0) {
+                if (emptyMsgPlaceholder) emptyMsgPlaceholder.classList.add('hidden');
+                cartRunningTotalRow.classList.remove('hidden');
+                cartRunningTotalValue.innerText = `${computedGrandTotal.toLocaleString()} ETB`;
+            } else {
+                if (emptyMsgPlaceholder) emptyMsgPlaceholder.classList.remove('hidden');
+                cartRunningTotalRow.classList.add('hidden');
+            }
+
+            document.getElementById('header-cart-count').innerText = `${accumulatedItemCount} Items`;
+            document.getElementById('item-variety-count').innerText = `${varietyCounter} types chosen`;
+            document.getElementById('invoice-total-qty').innerText = `${accumulatedItemCount} Units`;
+            document.getElementById('invoice-grand-total').innerText = `${computedGrandTotal.toLocaleString()} ETB`;
         }
 
         async function dispatchOrderDirectToTelegram() {
-            const btn = document.getElementById('submit-order-btn');
-            const name = document.getElementById('client-name').value;
-            
-            if (!name) return alert("Please enter your pharmacy name.");
-            
-            btn.innerText = "Transmitting...";
-            btn.disabled = true;
+            const pharmacyBusinessName = document.getElementById('client-name').value.trim();
+            const contactMobileNumber = document.getElementById('client-phone').value.trim();
+            const geographicAreaLocation = document.getElementById('client-location').value.trim();
+            const customerSelectedPayment = document.getElementById('payment-method').value;
+            const fileUploadFieldReference = document.getElementById('receipt-upload');
+            const submitActionButton = document.getElementById('submit-order-btn');
 
-            let text = `📦 New Order: ${name}\nTotal: ${document.getElementById('invoice-grand-total').innerText}`;
-            
+            if (!pharmacyBusinessName || !contactMobileNumber || !geographicAreaLocation) {
+                alert("Please complete the logistics form tracking inputs.");
+                return;
+            }
+
+            if (Object.keys(shoppingCart).length === 0) {
+                alert("Your active wholesale manifest sheet is empty.");
+                return;
+            }
+
+            submitActionButton.disabled = true;
+            submitActionButton.innerText = "Transmitting Manifesto...";
+
+            let stringOrderManifest = `📦 **NEW WHOLESALE ORDER ARRIVED**\n`;
+            stringOrderManifest += `==========================================\n`;
+            stringOrderManifest += `🏪 **Pharmacy/Shop:** ${pharmacyBusinessName}\n`;
+            stringOrderManifest += `📞 **Phone Link:** ${contactMobileNumber}\n`;
+            stringOrderManifest += `📍 **Location Area:** ${geographicAreaLocation}\n`;
+            stringOrderManifest += `💳 **Settlement:** ${customerSelectedPayment}\n`;
+            stringOrderManifest += `==========================================\n`;
+            stringOrderManifest += `🛍️ **MANIFEST SPECIFICS:**\n\n`;
+
+            let accumulatedTotalSumMath = 0;
+            let counterOrdinalIndex = 1;
+
+            for (const keyId in shoppingCart) {
+                const cartEntry = shoppingCart[keyId];
+                stringOrderManifest += `${counterOrdinalIndex}. ${cartEntry.name}\n`;
+                stringOrderManifest += `   📦 Volume: **${cartEntry.quantity}** units | ${cartEntry.calculatedItemTotal.toLocaleString()} ETB\n\n`;
+                accumulatedTotalSumMath += cartEntry.calculatedItemTotal;
+                counterOrdinalIndex++;
+            }
+
+            stringOrderManifest += `==========================================\n`;
+            stringOrderManifest += `💰 **GRAND TOTAL TO COLLECT: ${accumulatedTotalSumMath.toLocaleString()} ETB**`;
+
             try {
-                await fetch(`https://api.telegram.org/bot${SECURE_TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: DESTINATION_CHAT_ID, text: text })
-                });
-                alert("Order Sent!");
-                window.location.reload();
-            } catch (e) {
-                alert("Transmission failed.");
-                btn.disabled = false;
-                btn.innerText = "Submit Order";
+                if (fileUploadFieldReference.files && fileUploadFieldReference.files[0]) {
+                    const trackingFormDataPayload = new FormData();
+                    trackingFormDataPayload.append('chat_id', DESTINATION_CHAT_ID);
+                    trackingFormDataPayload.append('photo', fileUploadFieldReference.files[0]);
+                    trackingFormDataPayload.append('caption', stringOrderManifest);
+
+                    await fetch(`https://api.telegram.org/bot${SECURE_TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+                        method: 'POST',
+                        body: trackingFormDataPayload
+                    });
+                } else {
+                    await fetch(`https://api.telegram.org/bot${SECURE_TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: DESTINATION_CHAT_ID,
+                            text: stringOrderManifest,
+                            parse_mode: 'Markdown'
+                        })
+                    });
+                }
+
+                alert("🎯 Manifest transmitted to the Kumee Cosmo desk successfully.");
+                if (window.Telegram && window.Telegram.WebApp) {
+                    window.Telegram.WebApp.close();
+                } else {
+                    window.location.reload();
+                }
+            } catch (error) {
+                alert("Transmission endpoint communication breakdown.");
+                console.error(error);
+                submitActionButton.disabled = false;
+                submitActionButton.innerText = "🚀 Submit Order to Telegram Desk";
             }
         }
     </script>
