@@ -14,7 +14,20 @@
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col pb-12">
+<div id="preloader" class="fixed inset-0 z-[100] bg-emerald-950 flex flex-col items-center justify-center transition-opacity duration-700 ease-out">
+    <div class="flex flex-col items-center gap-6">
+        
+        <div class="bg-white p-6 rounded-3xl shadow-xl animate-pulse filter drop-shadow-[0_0_20px_rgba(52,211,153,0.3)]">
+            <img src="logo.jpg" alt="Kumee Cosmo Wholesale Logo" class="w-32 h-auto">
+        </div>
+        
+        <p class="text-[10px] text-emerald-300/50 uppercase tracking-widest mt-1">
+            Launching Wholesale Platform
+        </p>
 
+        <div class="w-6 h-6 border-2 border-emerald-500/20 border-t-emerald-400 rounded-full animate-spin"></div>
+    </div>
+</div>
     <div id="admin-panel" class="hidden bg-slate-900 text-white p-4 border-b-2 border-amber-500 sticky top-0 z-50 shadow-lg">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
             <div>
@@ -448,6 +461,22 @@
                
             }
         }
+  <script>
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            
+            // Keeps the logo visible for 1.2 seconds, then transitions
+            setTimeout(() => {
+                // Smoothly fades out the dark green screen
+                preloader.classList.add('opacity-0', 'pointer-events-none');
+                
+                // Completely deletes the loader from the screen after it fades
+                setTimeout(() => {
+                    preloader.remove();
+                }, 700); 
+            }, 1200);
+        });
     </script>
+
 </body>
 </html>
