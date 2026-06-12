@@ -462,19 +462,20 @@
             }
         }
   <script>
-        window.addEventListener('load', () => {
+        document.addEventListener('DOMContentLoaded', () => {
             const preloader = document.getElementById('preloader');
             
-            // Keeps the logo visible for 1.2 seconds, then transitions
-            setTimeout(() => {
-                // Smoothly fades out the dark green screen
-                preloader.classList.add('opacity-0', 'pointer-events-none');
-                
-                // Completely deletes the loader from the screen after it fades
-                setTimeout(() => {
-                    preloader.remove();
-                }, 700); 
-            }, 1200);
+            const removeLoader = () => {
+                if (preloader && !preloader.classList.contains('opacity-0')) {
+                    preloader.classList.add('opacity-0', 'pointer-events-none');
+                    setTimeout(() => {
+                        preloader.remove();
+                    }, 700);
+                }
+            };
+
+            setTimeout(removeLoader, 1200);
+            setTimeout(removeLoader, 3000);
         });
     </script>
 
