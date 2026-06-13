@@ -15,19 +15,18 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col pb-12">
 
-    <div id="admin-panel" class="hidden bg-slate-900 text-white p-4 border-b-2 border-amber-500 sticky top-0 z-50 shadow-lg">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-            <div>
-                <h2 class="text-sm font-black tracking-wider text-amber-400 flex items-center gap-2">
-                    🛠️ OWNER ADMINISTRATIVE CONSOLE
-                </h2>
-                <p class="text-[11px] text-slate-400">Tap any item pill below to toggle client-side visibility in real-time.</p>
-            </div>
-            <div id="admin-controls-grid" class="flex flex-wrap gap-2 max-w-xl"></div>
+    <!-- Owner Notice (shown only to owner in Telegram) -->
+    <div id="owner-panel" class="hidden bg-slate-900 text-white p-4 border-b-2 border-amber-500 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-sm font-black tracking-wider text-amber-400">🛠️ OWNER VIEW</h2>
+            <p class="text-[11px] text-slate-400 mt-1">
+                Use your Telegram bot to manage products. Send <span class="font-mono text-amber-300">/help</span> to your bot for all commands.
+            </p>
         </div>
     </div>
 
-    <header class="bg-emerald-950 text-white shadow-sm border-b border-emerald-800/50 backdrop-blur-md bg-opacity-95 sticky top-0 z-40">
+    <!-- Header -->
+    <header class="bg-emerald-950 text-white shadow-sm border-b border-emerald-800/50 sticky top-0 z-40">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
             <div>
                 <h1 class="text-xl font-extrabold tracking-tight flex items-center gap-2 text-emerald-400">
@@ -43,150 +42,64 @@
     </header>
 
     <main class="max-w-6xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8 flex-grow w-full">
-        
+
+        <!-- Product Catalog -->
         <section class="lg:col-span-2 space-y-8">
             <div class="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 flex items-center gap-3 text-xs text-emerald-950 font-medium shadow-sm">
                 <span class="text-base text-emerald-600">⚡</span>
                 <p>Adjust wholesale requirements below. Your running invoice sheet and totals calculate natively in real time.</p>
             </div>
 
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+            <!-- Paraffin Series -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100" id="section-paraffin">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-5 border-b border-slate-100 pb-3">
                     <span class="w-1.5 h-4 bg-emerald-600 rounded-full inline-block"></span> TAFLEN Paraffin Series
                 </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div id="card-p1" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p1" data-name="Paraffin 500ml" data-price="320">
-                        <h4 class="font-bold text-sm text-slate-900">Paraffin 500ml</h4>
-                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
-                            <span class="text-sm font-extrabold text-slate-900">320 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
-                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
-                        </div>
-                    </div>
-                    <div id="card-p2" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p2" data-name="Paraffin 330ml" data-price="240">
-                        <h4 class="font-bold text-sm text-slate-900">Paraffin 330ml</h4>
-                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
-                            <span class="text-sm font-extrabold text-slate-900">240 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
-                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
-                        </div>
-                    </div>
-                    <div id="card-p3" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p3" data-name="Paraffin 300ml" data-price="230">
-                        <h4 class="font-bold text-sm text-slate-900">Paraffin 300ml</h4>
-                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
-                            <span class="text-sm font-extrabold text-slate-900">230 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
-                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
-                        </div>
-                    </div>
-                    <div id="card-p4" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p4" data-name="Paraffin 250ml" data-price="190">
-                        <h4 class="font-bold text-sm text-slate-900">Paraffin 250ml</h4>
-                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
-                            <span class="text-sm font-extrabold text-slate-900">190 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
-                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
-                        </div>
-                    </div>
-                    <div id="card-p5" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p5" data-name="Paraffin 200ml" data-price="180">
-                        <h4 class="font-bold text-sm text-slate-900">Paraffin 200ml</h4>
-                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
-                            <span class="text-sm font-extrabold text-slate-900">180 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
-                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
-                        </div>
-                    </div>
-                    <div id="card-p6" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p6" data-name="Paraffin Heavy 1L" data-price="650">
-                        <h4 class="font-bold text-sm text-slate-900">Paraffin Heavy 1 Litre</h4>
-                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
-                            <span class="text-sm font-extrabold text-slate-900">650 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
-                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
-                        </div>
-                    </div>
-                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="grid-paraffin"></div>
             </div>
 
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+            <!-- Baby Line -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100" id="section-baby">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-5 border-b border-slate-100 pb-3">
                     <span class="w-1.5 h-4 bg-emerald-600 rounded-full inline-block"></span> TAFLEN Baby Protection Line
                 </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div id="card-p7" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p7" data-name="Baby Oil 400ml" data-price="300">
-                        <h4 class="font-bold text-sm text-slate-900">Baby Oil 400ml</h4>
-                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
-                            <span class="text-sm font-extrabold text-slate-900">300 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
-                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
-                        </div>
-                    </div>
-                    <div id="card-p8" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p8" data-name="Baby Oil 200ml" data-price="180">
-                        <h4 class="font-bold text-sm text-slate-900">Baby Oil 200ml</h4>
-                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
-                            <span class="text-sm font-extrabold text-slate-900">180 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
-                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
-                        </div>
-                    </div>
-                    <div id="card-p9" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p9" data-name="Baby Jelly 400g" data-price="350">
-                        <h4 class="font-bold text-sm text-slate-900">Baby Jelly 400g</h4>
-                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
-                            <span class="text-sm font-extrabold text-slate-900">350 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
-                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
-                        </div>
-                    </div>
-                    <div id="card-p10" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p10" data-name="Baby Jelly 350g" data-price="320">
-                        <h4 class="font-bold text-sm text-slate-900">Baby Jelly 350g</h4>
-                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
-                            <span class="text-sm font-extrabold text-slate-900">320 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
-                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
-                        </div>
-                    </div>
-                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="grid-baby"></div>
             </div>
 
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+            <!-- Jelly & Glycerin -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100" id="section-jelly">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-5 border-b border-slate-100 pb-3">
                     <span class="w-1.5 h-4 bg-emerald-600 rounded-full inline-block"></span> Protective Jelly & Glycerin Base
                 </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div id="card-p11" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p11" data-name="Vaseline 300g" data-price="310">
-                        <h4 class="font-bold text-sm text-slate-900">Vaseline 300g</h4>
-                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
-                            <span class="text-sm font-extrabold text-slate-900">310 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
-                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
-                        </div>
-                    </div>
-                    <div id="card-p12" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p12" data-name="Glycerin 200ml" data-price="135">
-                        <h4 class="font-bold text-sm text-slate-900">Glycerin 200ml</h4>
-                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
-                            <span class="text-sm font-extrabold text-slate-900">135 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
-                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
-                        </div>
-                    </div>
-                    <div id="card-p13" class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between group" data-id="p13" data-name="96% Alcohol" data-price="480">
-                        <h4 class="font-bold text-sm text-slate-900">96% Medical Alcohol</h4>
-                        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
-                            <span class="text-sm font-extrabold text-slate-900">480 <span class="text-[10px] text-slate-400 font-normal">ETB</span></span>
-                            <input type="number" min="0" value="0" oninput="handleQuantityChange(this)" class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white">
-                        </div>
-                    </div>
-                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="grid-jelly"></div>
             </div>
         </section>
 
+        <!-- Checkout Panel -->
         <section id="checkout-section" class="space-y-4">
             <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 sticky top-24">
                 <h2 class="text-xs font-bold text-slate-900 mb-4 uppercase tracking-wider flex items-center justify-between">
                     <span>📋 Selected Manifest</span>
-                    <span class="text-[11px] text-slate-400 lowercase font-normal" id="item-variety-count">0 lines selected</span>
+                    <span class="text-[11px] text-slate-400 lowercase font-normal" id="item-variety-count">0 types chosen</span>
                 </h2>
-                
-                <div id="dynamic-cart-list" class="space-y-2 max-h-48 overflow-y-auto border border-slate-100 rounded-2xl p-3 bg-slate-50/50">
-                    <p class="text-center text-xs text-slate-400 py-8 italic" id="empty-cart-message">No wholesale products chosen yet.</p>
+
+                <div id="cart-list" class="space-y-2 max-h-48 overflow-y-auto border border-slate-100 rounded-2xl p-3 bg-slate-50/50">
+                    <p class="text-center text-xs text-slate-400 py-8 italic" id="empty-cart-msg">No wholesale products chosen yet.</p>
                 </div>
 
-                <div id="cart-running-total-row" class="hidden flex justify-between items-center bg-emerald-50 text-emerald-900 rounded-xl px-4 py-3 border border-emerald-100 mt-2 mb-5 font-bold text-xs">
+                <div id="running-total-row" class="hidden flex justify-between items-center bg-emerald-50 text-emerald-900 rounded-xl px-4 py-3 border border-emerald-100 mt-2 mb-5 font-bold text-xs">
                     <span>Selected Items Value:</span>
-                    <span id="cart-running-total-value" class="font-mono text-sm text-emerald-700">0 ETB</span>
+                    <span id="running-total-value" class="font-mono text-sm text-emerald-700">0 ETB</span>
                 </div>
 
                 <div class="space-y-3 mb-5">
                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Pharmacy Logistics Metadata</label>
-                    <input type="text" id="client-name" placeholder="Pharmacy / Retail Establishment Name" class="w-full text-xs p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-medium bg-slate-50/50 focus:bg-white transition-all" required>
-                    <input type="tel" id="client-phone" placeholder="Contact Mobile Number" class="w-full text-xs p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-medium bg-slate-50/50 focus:bg-white transition-all" required>
-                    <input type="text" id="client-location" placeholder="Specific Delivery Area / Subcity" class="w-full text-xs p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-medium bg-slate-50/50 focus:bg-white transition-all" required>
+                    <input type="text" id="client-name" placeholder="Pharmacy / Retail Establishment Name"
+                        class="w-full text-xs p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-medium bg-slate-50/50 focus:bg-white transition-all">
+                    <input type="tel" id="client-phone" placeholder="Contact Mobile Number"
+                        class="w-full text-xs p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-medium bg-slate-50/50 focus:bg-white transition-all">
+                    <input type="text" id="client-location" placeholder="Specific Delivery Area / Subcity"
+                        class="w-full text-xs p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-medium bg-slate-50/50 focus:bg-white transition-all">
                 </div>
 
                 <div class="border-t border-slate-100 pt-4 space-y-2 text-xs font-medium">
@@ -206,250 +119,263 @@
 
                 <div class="mt-5 pt-4 border-t border-slate-100">
                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Settlement Protocol</label>
-                    <select id="payment-method" class="w-full text-xs p-3 border border-slate-200 rounded-xl bg-slate-50/50 font-semibold focus:outline-none focus:border-emerald-500 transition-all mb-3">
+                    <select id="payment-method" onchange="toggleReceiptUpload()"
+                        class="w-full text-xs p-3 border border-slate-200 rounded-xl bg-slate-50/50 font-semibold focus:outline-none focus:border-emerald-500 transition-all mb-3">
                         <option value="Cash on Delivery (COD)">Cash on Delivery (COD)</option>
                         <option value="Bank Transfer (CBE / Telebirr)">Bank Transfer (Deposit Receipt)</option>
                     </select>
-                    <input type="file" id="receipt-upload" accept="image/*" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
+                    <input type="file" id="receipt-upload" accept="image/*"
+                        class="hidden w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
                 </div>
 
-                <button id="submit-order-btn" onclick="dispatchOrderDirectToTelegram()" class="w-full mt-5 bg-emerald-600 text-white font-bold py-4 px-4 rounded-xl shadow-md hover:bg-emerald-700 transition-all text-xs uppercase tracking-wider">
+                <button onclick="submitOrder()"
+                    id="submit-btn"
+                    class="w-full mt-5 bg-emerald-600 text-white font-bold py-4 px-4 rounded-xl shadow-md hover:bg-emerald-700 transition-all text-xs uppercase tracking-wider">
                     🚀 Submit Order to Telegram Desk
-                
+                </button>
             </div>
         </section>
-        <footer class="mt-8 py-6 border-t border-slate-100 text-center">
-            <div class="space-y-1">
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Kumee Cosmo © 2026</p>
-                <p class="text-[10px] text-slate-400">Authorized Wholesale Platform</p>
-                <p class="text-[11px] text-emerald-700 font-bold pt-2">
-                    Developed by 
-                    <a href="https://t.me/obamafike" target="_blank" class="underline hover:text-emerald-900 transition-colors">
-                        @obamafike
-                    </a>
-                </p>
-            </div>
-        </footer>
     </main>
 
+    <footer class="mt-8 py-6 border-t border-slate-100 text-center">
+        <div class="space-y-1">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Kumee Cosmo © 2026</p>
+            <p class="text-[10px] text-slate-400">Authorized Wholesale Platform</p>
+            <p class="text-[11px] text-emerald-700 font-bold pt-2">
+                Developed by <a href="https://t.me/obamafike" target="_blank" class="underline hover:text-emerald-900">@obamafike</a>
+            </p>
+        </div>
+    </footer>
+
     <script>
-        const shoppingCart = {};
+        // ── Config ────────────────────────────────────────────────────────────
+        const API_BASE   = "https://code-builder--bonafikadu15.replit.app";
+        const OWNER_ID   = 5966033751;
+        const POLL_MS    = 30000;
 
-        // Inventory Reference Definition Map
-        const productCatalogIndex = [
-            { id: "p1", name: "Paraffin 500ml" },
-            { id: "p2", name: "Paraffin 330ml" },
-            { id: "p3", name: "Paraffin 300ml" },
-            { id: "p4", name: "Paraffin 250ml" },
-            { id: "p5", name: "Paraffin 200ml" },
-            { id: "p6", name: "Paraffin Heavy 1L" },
-            { id: "p7", name: "Baby Oil 400ml" },
-            { id: "p8", name: "Baby Oil 200ml" },
-            { id: "p9", name: "Baby Jelly 400g" },
-            { id: "p10", name: "Baby Jelly 350g" },
-            { id: "p11", name: "Vaseline 300g" },
-            { id: "p12", name: "Glycerin 200ml" },
-            { id: "p13", name: "96% Alcohol" }
-        ];
+        // ── State ─────────────────────────────────────────────────────────────
+        const cart = {};          // { id: { name, price, quantity, total } }
+        let   products = [];      // live product list from API
 
-        // SECURE TELEGRAM VALUES INJECTED
-        const SECURE_TELEGRAM_BOT_TOKEN = "8902266701:AAHHD0jFSPhHoIAZnffPXxMRH90cUZT9URo"; 
-        const DESTINATION_CHAT_ID = "5966033751"; 
-        const MASTER_OWNER_ID = 5966033751;
-
-        // Native Telegram Mini App Handshake Handlers
-        if (window.Telegram && window.Telegram.WebApp) {
+        // ── Telegram Mini App handshake ───────────────────────────────────────
+        if (window.Telegram?.WebApp) {
             window.Telegram.WebApp.ready();
             window.Telegram.WebApp.expand();
-            
-            const userSessionData = window.Telegram.WebApp.initDataUnsafe;
-            if (userSessionData && userSessionData.user && userSessionData.user.id === MASTER_OWNER_ID) {
-                activateOwnerConsole();
+            const user = window.Telegram.WebApp.initDataUnsafe?.user;
+            if (user?.id === OWNER_ID) {
+                document.getElementById('owner-panel').classList.remove('hidden');
             }
         }
 
-        function activateOwnerConsole() {
-            document.getElementById('admin-panel').classList.remove('hidden');
-            const targetControlsGrid = document.getElementById('admin-controls-grid');
+        // ── Payment / receipt toggle ──────────────────────────────────────────
+        function toggleReceiptUpload() {
+            const method  = document.getElementById('payment-method').value;
+            const upload  = document.getElementById('receipt-upload');
+            if (method === 'Cash on Delivery (COD)') {
+                upload.classList.add('hidden');
+                upload.value = '';
+            } else {
+                upload.classList.remove('hidden');
+            }
+        }
 
-            productCatalogIndex.forEach(product => {
-                const togglerButton = document.createElement('button');
-                togglerButton.id = `btn-toggle-${product.id}`;
-                togglerButton.className = "bg-emerald-600 text-white font-bold text-[10px] px-2.5 py-1.5 rounded-lg border border-emerald-500 transition-all";
-                togglerButton.innerText = `🟢 ${product.name}`;
-                togglerButton.onclick = () => performStockToggle(product.id, product.name);
-                targetControlsGrid.appendChild(togglerButton);
+        // ── Build a product card ──────────────────────────────────────────────
+        function buildCard(product) {
+            const priceChanged = product.price !== product.defaultPrice;
+            return `
+            <div id="card-${product.id}"
+                 class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between"
+                 data-id="${product.id}" data-name="${product.name}" data-price="${product.price}">
+                <div>
+                    <h4 class="font-bold text-sm text-slate-900">${product.name}</h4>
+                    ${priceChanged ? `<span class="text-[10px] text-amber-600 font-bold bg-amber-50 px-1.5 py-0.5 rounded mt-1 inline-block">Price updated</span>` : ''}
+                </div>
+                <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+                    <span class="text-sm font-extrabold text-slate-900">
+                        ${product.price} <span class="text-[10px] text-slate-400 font-normal">ETB</span>
+                    </span>
+                    <input type="number" min="0" value="${cart[product.id]?.quantity ?? 0}"
+                           oninput="handleQtyChange(this)"
+                           class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white focus:border-emerald-400 transition-colors">
+                </div>
+            </div>`;
+        }
+
+        // ── Render all products from API data ─────────────────────────────────
+        function renderProducts() {
+            const grids = { paraffin: '', baby: '', jelly: '' };
+            let anyParaffin = false, anyBaby = false, anyJelly = false;
+
+            products.forEach(p => {
+                if (p.hidden) return;
+                if (p.category === 'paraffin') { grids.paraffin += buildCard(p); anyParaffin = true; }
+                if (p.category === 'baby')     { grids.baby     += buildCard(p); anyBaby     = true; }
+                if (p.category === 'jelly')    { grids.jelly    += buildCard(p); anyJelly    = true; }
             });
+
+            document.getElementById('grid-paraffin').innerHTML = grids.paraffin;
+            document.getElementById('grid-baby').innerHTML     = grids.baby;
+            document.getElementById('grid-jelly').innerHTML    = grids.jelly;
+
+            document.getElementById('section-paraffin').style.display = anyParaffin ? '' : 'none';
+            document.getElementById('section-baby').style.display     = anyBaby     ? '' : 'none';
+            document.getElementById('section-jelly').style.display    = anyJelly    ? '' : 'none';
         }
 
-        function performStockToggle(productId, productName) {
-            const targetedProductCard = document.getElementById(`card-${productId}`);
-            const correspondingAdminButton = document.getElementById(`btn-toggle-${productId}`);
+        // ── Fetch live products from backend ──────────────────────────────────
+        async function fetchProducts() {
+            try {
+                const res  = await fetch(API_BASE + '/api/products', { cache: 'no-store' });
+                if (!res.ok) return;
+                const data = await res.json();
+                products = data;
 
-            if (targetedProductCard.classList.contains('hidden')) {
-                targetedProductCard.classList.remove('hidden');
-                correspondingAdminButton.innerText = `🟢 ${productName}`;
-                correspondingAdminButton.className = "bg-emerald-600 text-white font-bold text-[10px] px-2.5 py-1.5 rounded-lg border border-emerald-500";
-            } else {
-                targetedProductCard.classList.add('hidden');
-                correspondingAdminButton.innerText = `🔴 Hidden: ${productName}`;
-                correspondingAdminButton.className = "bg-rose-900 text-rose-200 font-bold text-[10px] px-2.5 py-1.5 rounded-lg border border-rose-700";
-                
-                if (shoppingCart[productId]) {
-                    delete shoppingCart[productId];
-                    targetedProductCard.querySelector('input').value = 0;
-                    executeInvoicePipeline();
-                }
+                // Remove hidden items from cart automatically
+                data.forEach(p => {
+                    if (p.hidden && cart[p.id]) {
+                        delete cart[p.id];
+                    }
+                    // Update price in cart if changed
+                    if (cart[p.id]) {
+                        cart[p.id].price = p.price;
+                        cart[p.id].total = p.price * cart[p.id].quantity;
+                    }
+                });
+
+                renderProducts();
+                updateInvoice();
+            } catch (e) {
+                console.error('Failed to fetch products:', e);
             }
         }
 
-        function handleQuantityChange(inputElement) {
-            const productContainer = inputElement.closest('[data-id]');
-            const productId = productContainer.dataset.id;
-            const productName = productContainer.dataset.name;
-            const productPrice = parseInt(productContainer.dataset.price);
-            const inputQuantity = parseInt(inputElement.value) || 0;
+        // ── Quantity change handler ───────────────────────────────────────────
+        function handleQtyChange(input) {
+            const card  = input.closest('[data-id]');
+            const id    = card.dataset.id;
+            const name  = card.dataset.name;
+            const price = parseInt(card.dataset.price);
+            const qty   = parseInt(input.value) || 0;
 
-            if (inputQuantity > 0) {
-                shoppingCart[productId] = {
-                    name: productName,
-                    price: productPrice,
-                    quantity: inputQuantity,
-                    calculatedItemTotal: productPrice * inputQuantity
-                };
+            if (qty > 0) {
+                cart[id] = { name, price, quantity: qty, total: price * qty };
             } else {
-                delete shoppingCart[productId];
+                delete cart[id];
             }
-            executeInvoicePipeline();
+            updateInvoice();
         }
 
-        function executeInvoicePipeline() {
-            const cartContainerList = document.getElementById('dynamic-cart-list');
-            const emptyMsgPlaceholder = document.getElementById('empty-cart-message');
-            const cartRunningTotalRow = document.getElementById('cart-running-total-row');
-            const cartRunningTotalValue = document.getElementById('cart-running-total-value');
-            
-            let accumulatedItemCount = 0;
-            let computedGrandTotal = 0;
-            let varietyCounter = 0;
+        // ── Rebuild the invoice panel ─────────────────────────────────────────
+        function updateInvoice() {
+            const cartList   = document.getElementById('cart-list');
+            const emptyMsg   = document.getElementById('empty-cart-msg');
+            const totalRow   = document.getElementById('running-total-row');
+            const totalVal   = document.getElementById('running-total-value');
 
-            const liveRows = cartContainerList.querySelectorAll('.cart-item-row');
-            liveRows.forEach(row => row.remove());
+            // Clear old rows
+            cartList.querySelectorAll('.cart-row').forEach(r => r.remove());
 
-            for (const keyId in shoppingCart) {
-                varietyCounter++;
-                const itemData = shoppingCart[keyId];
-                accumulatedItemCount += itemData.quantity;
-                computedGrandTotal += itemData.calculatedItemTotal;
+            let totalUnits = 0, grandTotal = 0, variety = 0;
 
-                const itemRowHTML = document.createElement('div');
-                itemRowHTML.className = "cart-item-row flex items-center justify-between text-xs bg-white p-3 rounded-xl border border-slate-100 font-medium shadow-sm";
-                itemRowHTML.innerHTML = `
+            for (const item of Object.values(cart)) {
+                variety++;
+                totalUnits += item.quantity;
+                grandTotal += item.total;
+
+                const row = document.createElement('div');
+                row.className = 'cart-row flex items-center justify-between text-xs bg-white p-3 rounded-xl border border-slate-100 font-medium shadow-sm';
+                row.innerHTML = `
                     <div class="max-w-[70%]">
-                        <p class="font-bold text-slate-800 truncate">${itemData.name}</p>
-                        <p class="text-[10px] text-slate-400">Qty: ${itemData.quantity} × ${itemData.price} ETB</p>
+                        <p class="font-bold text-slate-800 truncate">${item.name}</p>
+                        <p class="text-[10px] text-slate-400">Qty: ${item.quantity} × ${item.price} ETB</p>
                     </div>
-                    <span class="font-mono font-bold text-slate-700">${itemData.calculatedItemTotal.toLocaleString()} ETB</span>
-                `;
-                cartContainerList.appendChild(itemRowHTML);
+                    <span class="font-mono font-bold text-slate-700">${item.total.toLocaleString()} ETB</span>`;
+                cartList.appendChild(row);
             }
 
-            if (varietyCounter > 0) {
-                if (emptyMsgPlaceholder) emptyMsgPlaceholder.classList.add('hidden');
-                cartRunningTotalRow.classList.remove('hidden');
-                cartRunningTotalValue.innerText = `${computedGrandTotal.toLocaleString()} ETB`;
+            if (variety > 0) {
+                emptyMsg.classList.add('hidden');
+                totalRow.classList.remove('hidden');
+                totalVal.textContent = grandTotal.toLocaleString() + ' ETB';
             } else {
-                if (emptyMsgPlaceholder) emptyMsgPlaceholder.classList.remove('hidden');
-                cartRunningTotalRow.classList.add('hidden');
+                emptyMsg.classList.remove('hidden');
+                totalRow.classList.add('hidden');
             }
 
-            document.getElementById('header-cart-count').innerText = `${accumulatedItemCount} Items`;
-            document.getElementById('item-variety-count').innerText = `${varietyCounter} types chosen`;
-            document.getElementById('invoice-total-qty').innerText = `${accumulatedItemCount} Units`;
-            document.getElementById('invoice-grand-total').innerText = `${computedGrandTotal.toLocaleString()} ETB`;
+            document.getElementById('header-cart-count').textContent = totalUnits + ' Items';
+            document.getElementById('item-variety-count').textContent = variety + ' types chosen';
+            document.getElementById('invoice-total-qty').textContent  = totalUnits + ' Units';
+            document.getElementById('invoice-grand-total').textContent = grandTotal.toLocaleString() + ' ETB';
         }
 
-        async function dispatchOrderDirectToTelegram() {
-            const pharmacyBusinessName = document.getElementById('client-name').value.trim();
-            const contactMobileNumber = document.getElementById('client-phone').value.trim();
-            const geographicAreaLocation = document.getElementById('client-location').value.trim();
-            const customerSelectedPayment = document.getElementById('payment-method').value;
-            const fileUploadFieldReference = document.getElementById('receipt-upload');
-            const submitActionButton = document.getElementById('submit-order-btn');
+        // ── Submit order through backend API ──────────────────────────────────
+        async function submitOrder() {
+            const name     = document.getElementById('client-name').value.trim();
+            const phone    = document.getElementById('client-phone').value.trim();
+            const location = document.getElementById('client-location').value.trim();
+            const payment  = document.getElementById('payment-method').value;
+            const fileEl   = document.getElementById('receipt-upload');
+            const btn      = document.getElementById('submit-btn');
 
-            if (!pharmacyBusinessName || !contactMobileNumber || !geographicAreaLocation) {
-                alert("Please complete the logistics form tracking inputs.");
+            if (!name || !phone || !location) {
+                alert('Please complete the logistics form tracking inputs.');
+                return;
+            }
+            if (Object.keys(cart).length === 0) {
+                alert('Your active wholesale manifest sheet is empty.');
                 return;
             }
 
-            if (Object.keys(shoppingCart).length === 0) {
-                alert("Your active wholesale manifest sheet is empty.");
-                return;
-            }
-
-            submitActionButton.disabled = true;
-            submitActionButton.innerText = "Transmitting Manifesto...";
-
-            let stringOrderManifest = `📦 **NEW WHOLESALE ORDER ARRIVED**\n`;
-            stringOrderManifest += `==========================================\n`;
-            stringOrderManifest += `🏪 **Pharmacy/Shop:** ${pharmacyBusinessName}\n`;
-            stringOrderManifest += `📞 **Phone Link:** ${contactMobileNumber}\n`;
-            stringOrderManifest += `📍 **Location Area:** ${geographicAreaLocation}\n`;
-            stringOrderManifest += `💳 **Settlement:** ${customerSelectedPayment}\n`;
-            stringOrderManifest += `==========================================\n`;
-            stringOrderManifest += `🛍️ **MANIFEST SPECIFICS:**\n\n`;
-
-            let accumulatedTotalSumMath = 0;
-            let counterOrdinalIndex = 1;
-
-            for (const keyId in shoppingCart) {
-                const cartEntry = shoppingCart[keyId];
-                stringOrderManifest += `${counterOrdinalIndex}. ${cartEntry.name}\n`;
-                stringOrderManifest += `   📦 Volume: **${cartEntry.quantity}** units | ${cartEntry.calculatedItemTotal.toLocaleString()} ETB\n\n`;
-                accumulatedTotalSumMath += cartEntry.calculatedItemTotal;
-                counterOrdinalIndex++;
-            }
-
-            stringOrderManifest += `==========================================\n`;
-            stringOrderManifest += `💰 **GRAND TOTAL TO COLLECT: ${accumulatedTotalSumMath.toLocaleString()} ETB**`;
+            btn.disabled = true;
+            btn.textContent = 'Transmitting Manifesto...';
 
             try {
-                if (fileUploadFieldReference.files && fileUploadFieldReference.files[0]) {
-                    const trackingFormDataPayload = new FormData();
-                    trackingFormDataPayload.append('chat_id', DESTINATION_CHAT_ID);
-                    trackingFormDataPayload.append('photo', fileUploadFieldReference.files[0]);
-                    trackingFormDataPayload.append('caption', stringOrderManifest);
+                let receiptBase64   = undefined;
+                let receiptMimeType = undefined;
 
-                    await fetch(`https://api.telegram.org/bot${SECURE_TELEGRAM_BOT_TOKEN}/sendPhoto`, {
-                        method: 'POST',
-                        body: trackingFormDataPayload
-                    });
-                } else {
-                    await fetch(`https://api.telegram.org/bot${SECURE_TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            chat_id: DESTINATION_CHAT_ID,
-                            text: stringOrderManifest,
-                            parse_mode: 'Markdown'
-                        })
-                    });
+                if (fileEl.files && fileEl.files[0]) {
+                    const file   = fileEl.files[0];
+                    const buffer = await file.arrayBuffer();
+                    receiptBase64   = btoa(new Uint8Array(buffer).reduce((s, b) => s + String.fromCharCode(b), ''));
+                    receiptMimeType = file.type;
                 }
 
-                alert("🎯 Manifest transmitted to the Kumee Cosmo desk successfully.");
-                if (window.Telegram && window.Telegram.WebApp) {
+                const res = await fetch(API_BASE + '/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        clientName: name,
+                        clientPhone: phone,
+                        clientLocation: location,
+                        paymentMethod: payment,
+                        items: Object.values(cart),
+                        receiptBase64,
+                        receiptMimeType
+                    })
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || 'Order failed');
+                }
+
+                alert('🎯 Manifest transmitted to the Kumee Cosmo desk successfully.');
+                if (window.Telegram?.WebApp) {
                     window.Telegram.WebApp.close();
                 } else {
                     window.location.reload();
                 }
-            } catch (error) {
-                alert("Transmission endpoint communication breakdown.");
-                console.error(error);
-               
+            } catch (err) {
+                alert('Transmission endpoint communication breakdown.');
+                console.error(err);
+                btn.disabled = false;
+                btn.textContent = '🚀 Submit Order to Telegram Desk';
             }
         }
- 
-    </script>
 
+        // ── Boot ──────────────────────────────────────────────────────────────
+        fetchProducts();
+        setInterval(fetchProducts, POLL_MS);
+    </script>
 </body>
 </html>
