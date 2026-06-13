@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kumee Cosmo — Premium TAFLEN Wholesale</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        html { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col pb-12">
+
+    <!-- Owner Notice (shown only to owner in Telegram) -->
+    <div id="owner-panel" class="hidden bg-slate-900 text-white p-4 border-b-2 border-amber-500 sticky top-0 z-50 shadow-lg">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-sm font-black tracking-wider text-amber-400">🛠️ OWNER VIEW</h2>
+            <p class="text-[11px] text-slate-400 mt-1">
+                Use your Telegram bot to manage products. Send <span class="font-mono text-amber-300">/help</span> to your bot for all commands.
+            </p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-emerald-950 text-white shadow-sm border-b border-emerald-800/50 sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-extrabold tracking-tight flex items-center gap-2 text-emerald-400">
+                    ✨ KUMEE COSMO
+                </h1>
+                <p class="text-[11px] text-emerald-300/70 font-medium tracking-wide uppercase">TAFLEN Products Authorized Distributor</p>
+            </div>
+            <a href="#checkout-section" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-all duration-200 shadow-sm flex items-center gap-2 hover:scale-[1.02]">
+                <span>🛒 Order Sheet</span>
+                <span id="header-cart-count" class="bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded-lg text-[11px] font-black">0 Items</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8 flex-grow w-full">
+
+        <!-- Product Catalog -->
+        <section class="lg:col-span-2 space-y-8">
+            <div class="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 flex items-center gap-3 text-xs text-emerald-950 font-medium shadow-sm">
+                <span class="text-base text-emerald-600">⚡</span>
+                <p>Adjust wholesale requirements below. Your running invoice sheet and totals calculate natively in real time.</p>
+            </div>
+
+            <!-- Paraffin Series -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100" id="section-paraffin">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-5 border-b border-slate-100 pb-3">
+                    <span class="w-1.5 h-4 bg-emerald-600 rounded-full inline-block"></span> TAFLEN Paraffin Series
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="grid-paraffin"></div>
+            </div>
+
+            <!-- Baby Line -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100" id="section-baby">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-5 border-b border-slate-100 pb-3">
+                    <span class="w-1.5 h-4 bg-emerald-600 rounded-full inline-block"></span> TAFLEN Baby Protection Line
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="grid-baby"></div>
+            </div>
+
+            <!-- Jelly & Glycerin -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100" id="section-jelly">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-5 border-b border-slate-100 pb-3">
+                    <span class="w-1.5 h-4 bg-emerald-600 rounded-full inline-block"></span> Protective Jelly & Glycerin Base
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="grid-jelly"></div>
+            </div>
+        </section>
+
+        <!-- Checkout Panel -->
+        <section id="checkout-section" class="space-y-4">
+            <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-100 sticky top-24">
+                <h2 class="text-xs font-bold text-slate-900 mb-4 uppercase tracking-wider flex items-center justify-between">
+                    <span>📋 Selected Manifest</span>
+                    <span class="text-[11px] text-slate-400 lowercase font-normal" id="item-variety-count">0 types chosen</span>
+                </h2>
+
+                <div id="cart-list" class="space-y-2 max-h-48 overflow-y-auto border border-slate-100 rounded-2xl p-3 bg-slate-50/50">
+                    <p class="text-center text-xs text-slate-400 py-8 italic" id="empty-cart-msg">No wholesale products chosen yet.</p>
+                </div>
+
+                <div id="running-total-row" class="hidden flex justify-between items-center bg-emerald-50 text-emerald-900 rounded-xl px-4 py-3 border border-emerald-100 mt-2 mb-5 font-bold text-xs">
+                    <span>Selected Items Value:</span>
+                    <span id="running-total-value" class="font-mono text-sm text-emerald-700">0 ETB</span>
+                </div>
+
+                <div class="space-y-3 mb-5">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Pharmacy Logistics Metadata</label>
+                    <input type="text" id="client-name" placeholder="Pharmacy / Retail Establishment Name"
+                        class="w-full text-xs p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-medium bg-slate-50/50 focus:bg-white transition-all">
+                    <input type="tel" id="client-phone" placeholder="Contact Mobile Number"
+                        class="w-full text-xs p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-medium bg-slate-50/50 focus:bg-white transition-all">
+                    <input type="text" id="client-location" placeholder="Specific Delivery Area / Subcity"
+                        class="w-full text-xs p-3.5 border border-slate-200 rounded-xl focus:outline-none focus:border-emerald-500 font-medium bg-slate-50/50 focus:bg-white transition-all">
+                </div>
+
+                <div class="border-t border-slate-100 pt-4 space-y-2 text-xs font-medium">
+                    <div class="flex justify-between text-slate-500">
+                        <span>Total Units Selected:</span>
+                        <span id="invoice-total-qty" class="font-mono text-slate-700 font-bold">0 Units</span>
+                    </div>
+                    <div class="flex justify-between text-slate-500">
+                        <span>Logistics Cost:</span>
+                        <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md text-[10px] uppercase font-bold tracking-wide">Free Wholesale Delivery</span>
+                    </div>
+                    <div class="flex justify-between text-sm font-extrabold text-slate-900 pt-3 border-t border-dashed border-slate-200">
+                        <span>Grand Total Payable:</span>
+                        <span id="invoice-grand-total" class="text-emerald-600 text-base font-mono">0 ETB</span>
+                    </div>
+                </div>
+
+                <div class="mt-5 pt-4 border-t border-slate-100">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Settlement Protocol</label>
+                    <select id="payment-method" onchange="toggleReceiptUpload()"
+                        class="w-full text-xs p-3 border border-slate-200 rounded-xl bg-slate-50/50 font-semibold focus:outline-none focus:border-emerald-500 transition-all mb-3">
+                        <option value="Cash on Delivery (COD)">Cash on Delivery (COD)</option>
+                        <option value="Bank Transfer (CBE / Telebirr)">Bank Transfer (Deposit Receipt)</option>
+                    </select>
+                    <input type="file" id="receipt-upload" accept="image/*"
+                        class="hidden w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
+                </div>
+
+                <button onclick="submitOrder()"
+                    id="submit-btn"
+                    class="w-full mt-5 bg-emerald-600 text-white font-bold py-4 px-4 rounded-xl shadow-md hover:bg-emerald-700 transition-all text-xs uppercase tracking-wider">
+                    🚀 Submit Order to Telegram Desk
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="mt-8 py-6 border-t border-slate-100 text-center">
+        <div class="space-y-1">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Kumee Cosmo © 2026</p>
+            <p class="text-[10px] text-slate-400">Authorized Wholesale Platform</p>
+            <p class="text-[11px] text-emerald-700 font-bold pt-2">
+                Developed by <a href="https://t.me/obamafike" target="_blank" class="underline hover:text-emerald-900">@obamafike</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // ── Config ────────────────────────────────────────────────────────────
+        const API_BASE   = "https://code-builder--bonafikadu15.replit.app";
+        const OWNER_ID   = 5966033751;
+        const POLL_MS    = 30000;
+
+        // ── State ─────────────────────────────────────────────────────────────
+        const cart = {};          // { id: { name, price, quantity, total } }
+        let   products = [];      // live product list from API
+
+        // ── Telegram Mini App handshake ───────────────────────────────────────
+        if (window.Telegram?.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
+            const user = window.Telegram.WebApp.initDataUnsafe?.user;
+            if (user?.id === OWNER_ID) {
+                document.getElementById('owner-panel').classList.remove('hidden');
+            }
+        }
+
+        // ── Payment / receipt toggle ──────────────────────────────────────────
+        function toggleReceiptUpload() {
+            const method  = document.getElementById('payment-method').value;
+            const upload  = document.getElementById('receipt-upload');
+            if (method === 'Cash on Delivery (COD)') {
+                upload.classList.add('hidden');
+                upload.value = '';
+            } else {
+                upload.classList.remove('hidden');
+            }
+        }
+
+        // ── Build a product card ──────────────────────────────────────────────
+        function buildCard(product) {
+            const priceChanged = product.price !== product.defaultPrice;
+            return `
+            <div id="card-${product.id}"
+                 class="p-4 bg-slate-50/50 rounded-xl border border-slate-200/60 flex flex-col justify-between"
+                 data-id="${product.id}" data-name="${product.name}" data-price="${product.price}">
+                <div>
+                    <h4 class="font-bold text-sm text-slate-900">${product.name}</h4>
+                    ${priceChanged ? `<span class="text-[10px] text-amber-600 font-bold bg-amber-50 px-1.5 py-0.5 rounded mt-1 inline-block">Price updated</span>` : ''}
+                </div>
+                <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+                    <span class="text-sm font-extrabold text-slate-900">
+                        ${product.price} <span class="text-[10px] text-slate-400 font-normal">ETB</span>
+                    </span>
+                    <input type="number" min="0" value="${cart[product.id]?.quantity ?? 0}"
+                           oninput="handleQtyChange(this)"
+                           class="w-16 p-1.5 text-center font-mono font-bold border border-slate-200 rounded-lg text-xs outline-none bg-white focus:border-emerald-400 transition-colors">
+                </div>
+            </div>`;
+        }
+
+        // ── Render all products from API data ─────────────────────────────────
+        function renderProducts() {
+            const grids = { paraffin: '', baby: '', jelly: '' };
+            let anyParaffin = false, anyBaby = false, anyJelly = false;
+
+            products.forEach(p => {
+                if (p.hidden) return;
+                if (p.category === 'paraffin') { grids.paraffin += buildCard(p); anyParaffin = true; }
+                if (p.category === 'baby')     { grids.baby     += buildCard(p); anyBaby     = true; }
+                if (p.category === 'jelly')    { grids.jelly    += buildCard(p); anyJelly    = true; }
+            });
+
+            document.getElementById('grid-paraffin').innerHTML = grids.paraffin;
+            document.getElementById('grid-baby').innerHTML     = grids.baby;
+            document.getElementById('grid-jelly').innerHTML    = grids.jelly;
+
+            document.getElementById('section-paraffin').style.display = anyParaffin ? '' : 'none';
+            document.getElementById('section-baby').style.display     = anyBaby     ? '' : 'none';
+            document.getElementById('section-jelly').style.display    = anyJelly    ? '' : 'none';
+        }
+
+        // ── Fetch live products from backend ──────────────────────────────────
+        async function fetchProducts() {
+            try {
+                const res  = await fetch(API_BASE + '/api/products', { cache: 'no-store' });
+                if (!res.ok) return;
+                const data = await res.json();
+                products = data;
+
+                // Remove hidden items from cart automatically
+                data.forEach(p => {
+                    if (p.hidden && cart[p.id]) {
+                        delete cart[p.id];
+                    }
+                    // Update price in cart if changed
+                    if (cart[p.id]) {
+                        cart[p.id].price = p.price;
+                        cart[p.id].total = p.price * cart[p.id].quantity;
+                    }
+                });
+
+                renderProducts();
+                updateInvoice();
+            } catch (e) {
+                console.error('Failed to fetch products:', e);
+            }
+        }
+
+        // ── Quantity change handler ───────────────────────────────────────────
+        function handleQtyChange(input) {
+            const card  = input.closest('[data-id]');
+            const id    = card.dataset.id;
+            const name  = card.dataset.name;
+            const price = parseInt(card.dataset.price);
+            const qty   = parseInt(input.value) || 0;
+
+            if (qty > 0) {
+                cart[id] = { name, price, quantity: qty, total: price * qty };
+            } else {
+                delete cart[id];
+            }
+            updateInvoice();
+        }
+
+        // ── Rebuild the invoice panel ─────────────────────────────────────────
+        function updateInvoice() {
+            const cartList   = document.getElementById('cart-list');
+            const emptyMsg   = document.getElementById('empty-cart-msg');
+            const totalRow   = document.getElementById('running-total-row');
+            const totalVal   = document.getElementById('running-total-value');
+
+            // Clear old rows
+            cartList.querySelectorAll('.cart-row').forEach(r => r.remove());
+
+            let totalUnits = 0, grandTotal = 0, variety = 0;
+
+            for (const item of Object.values(cart)) {
+                variety++;
+                totalUnits += item.quantity;
+                grandTotal += item.total;
+
+                const row = document.createElement('div');
+                row.className = 'cart-row flex items-center justify-between text-xs bg-white p-3 rounded-xl border border-slate-100 font-medium shadow-sm';
+                row.innerHTML = `
+                    <div class="max-w-[70%]">
+                        <p class="font-bold text-slate-800 truncate">${item.name}</p>
+                        <p class="text-[10px] text-slate-400">Qty: ${item.quantity} × ${item.price} ETB</p>
+                    </div>
+                    <span class="font-mono font-bold text-slate-700">${item.total.toLocaleString()} ETB</span>`;
+                cartList.appendChild(row);
+            }
+
+            if (variety > 0) {
+                emptyMsg.classList.add('hidden');
+                totalRow.classList.remove('hidden');
+                totalVal.textContent = grandTotal.toLocaleString() + ' ETB';
+            } else {
+                emptyMsg.classList.remove('hidden');
+                totalRow.classList.add('hidden');
+            }
+
+            document.getElementById('header-cart-count').textContent = totalUnits + ' Items';
+            document.getElementById('item-variety-count').textContent = variety + ' types chosen';
+            document.getElementById('invoice-total-qty').textContent  = totalUnits + ' Units';
+            document.getElementById('invoice-grand-total').textContent = grandTotal.toLocaleString() + ' ETB';
+        }
+
+        // ── Submit order through backend API ──────────────────────────────────
+        async function submitOrder() {
+            const name     = document.getElementById('client-name').value.trim();
+            const phone    = document.getElementById('client-phone').value.trim();
+            const location = document.getElementById('client-location').value.trim();
+            const payment  = document.getElementById('payment-method').value;
+            const fileEl   = document.getElementById('receipt-upload');
+            const btn      = document.getElementById('submit-btn');
+
+            if (!name || !phone || !location) {
+                alert('Please complete the logistics form tracking inputs.');
+                return;
+            }
+            if (Object.keys(cart).length === 0) {
+                alert('Your active wholesale manifest sheet is empty.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Transmitting Manifesto...';
+
+            try {
+                let receiptBase64   = undefined;
+                let receiptMimeType = undefined;
+
+                if (fileEl.files && fileEl.files[0]) {
+                    const file   = fileEl.files[0];
+                    const buffer = await file.arrayBuffer();
+                    receiptBase64   = btoa(new Uint8Array(buffer).reduce((s, b) => s + String.fromCharCode(b), ''));
+                    receiptMimeType = file.type;
+                }
+
+                const res = await fetch(API_BASE + '/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        clientName: name,
+                        clientPhone: phone,
+                        clientLocation: location,
+                        paymentMethod: payment,
+                        items: Object.values(cart),
+                        receiptBase64,
+                        receiptMimeType
+                    })
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error || 'Order failed');
+                }
+
+                alert('🎯 Manifest transmitted to the Kumee Cosmo desk successfully.');
+                if (window.Telegram?.WebApp) {
+                    window.Telegram.WebApp.close();
+                } else {
+                    window.location.reload();
+                }
+            } catch (err) {
+                alert('Transmission endpoint communication breakdown.');
+                console.error(err);
+                btn.disabled = false;
+                btn.textContent = '🚀 Submit Order to Telegram Desk';
+            }
+        }
+
+        // ── Boot ──────────────────────────────────────────────────────────────
+        fetchProducts();
+        setInterval(fetchProducts, POLL_MS);
+    </script>
+</body>
+</html>
