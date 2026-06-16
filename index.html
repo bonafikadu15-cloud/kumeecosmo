@@ -219,45 +219,51 @@
 
         // ── Render all products from API data ─────────────────────────────────
       function renderProducts() {
+          function renderProducts() {
             const grids = { paraffin: '', baby: '', jelly: '', dynamic: '' };
             let anyParaffin = false, anyBaby = false, anyJelly = false, anyDynamic = false;
 
             products.forEach(p => {
                 if (p.hidden) return;
                 
-                // 🛠️ SAFE FIX FOR THE NAME: If p.name is blank or missing, look for backup names 
-                // so it never prints the generic word "product"
-                if (!p.name) {
-                    p.name = p.nameOverride || p.productName || `Glycerin 100ml`;
+                // 🛠️ 1. DYNAMIC NAME LOOKUP (Checks every possible backend database key)
+                let trueName = p.name || p.nameOverride || p.productName || p.product_name || '';
+                
+                // If it's still completely empty, create a smart fallback based on its ID or type
+                if (!trueName || trueName.toLowerCase() === 'product') {
+                    if (p.id === 'p17') trueName = 'Glycerin 100ml';
+                    else if (p.id === 'p18') trueName = 'Vaseline Jelly 900ml';
+                    else trueName = `Wholesale Item (${p.id})`;
                 }
                 
-                // Clean up name formatting (Convert underscores back to spaces if any exist)
-                if (p.name && typeof p.name === 'string') {
-                    p.name = p.name.replace(/_/g, ' ');
-                }
+                // Clean up underscores from Telegram commands and replace with spaces
+                p.name = trueName.replace(/_/g, ' ');
 
-                // 🌟 BULLETPROOF CATEGORY SORTING:
-                // Convert to lowercase and trim spaces to prevent routing errors
-                const cat = (p.category || '').toLowerCase().trim();
+                // 🛠️ 2. DYNAMIC CATEGORY LOOKUP (Checks every possible backend category key)
+                let trueCategory = p.category || p.categoryOverride || p.type || '';
+                
+                // Force it to lowercase and remove accidental empty spaces
+                const cat = trueCategory.toLowerCase().trim();
 
-                if (cat === 'paraffin') { 
+                // 🌟 3. ROBUST ROUTING SYSTEM
+                if (cat === 'paraffin' || p.id === 'p14') { 
                     grids.paraffin += buildCard(p); 
                     anyParaffin = true; 
                 } else if (cat === 'baby' || cat === 'baby oil' || cat === 'baby jelly') {     
                     grids.baby     += buildCard(p); 
                     anyBaby     = true; 
-                } else if (cat === 'jelly' || cat === 'glycerin' || cat === 'vaseline') {    
-                    // This explicitly ensures Glycerin, Vaseline, and Jelly stay unified!
+                } else if (cat === 'jelly' || cat === 'glycerin' || cat === 'vaseline' || p.id === 'p17' || p.id === 'p18') {    
+                    // Hardcoded IDs p17 and p18 force Glycerin and Vaseline here no matter what!
                     grids.jelly    += buildCard(p); 
                     anyJelly    = true; 
                 } else {
-                    // Actual custom categories (like cosmetics, hair, etc.) go here
+                    // Real fallback option for future unknown item categories
                     grids.dynamic  += buildCard(p);
                     anyDynamic   = true;
                 }
             });
 
-            // Injects the layouts into the DOM grids
+            // Inject strings directly into your HTML containers
             document.getElementById('grid-paraffin').innerHTML = grids.paraffin;
             document.getElementById('grid-baby').innerHTML     = grids.baby;
             document.getElementById('grid-jelly').innerHTML    = grids.jelly;
@@ -265,7 +271,7 @@
             const dynamicGrid = document.getElementById('grid-dynamic');
             if (dynamicGrid) dynamicGrid.innerHTML = grids.dynamic;
 
-            // Manage section layout display toggles
+            // Toggle layout section visibility states dynamically
             document.getElementById('section-paraffin').style.display = anyParaffin ? '' : 'none';
             document.getElementById('section-baby').style.display     = anyBaby     ? '' : 'none';
             document.getElementById('section-jelly').style.display    = anyJelly    ? '' : 'none';
@@ -275,7 +281,7 @@
                 dynamicSection.style.display = anyDynamic ? '' : 'none';
             }
         }
-
+           
         // ── Fetch live products from backend ──────────────────────────────────
         async function fetchProducts() {
             try {
