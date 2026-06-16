@@ -218,31 +218,46 @@
         }
 
         // ── Render all products from API data ─────────────────────────────────
-       function renderProducts() {
-            // Added 'dynamic' to your grids object
+      function renderProducts() {
             const grids = { paraffin: '', baby: '', jelly: '', dynamic: '' };
             let anyParaffin = false, anyBaby = false, anyJelly = false, anyDynamic = false;
 
             products.forEach(p => {
                 if (p.hidden) return;
                 
-                if (p.category === 'paraffin') { 
+                // 🛠️ SAFE FIX FOR THE NAME: If p.name is blank or missing, look for backup names 
+                // so it never prints the generic word "product"
+                if (!p.name) {
+                    p.name = p.nameOverride || p.productName || `Glycerin 100ml`;
+                }
+                
+                // Clean up name formatting (Convert underscores back to spaces if any exist)
+                if (p.name && typeof p.name === 'string') {
+                    p.name = p.name.replace(/_/g, ' ');
+                }
+
+                // 🌟 BULLETPROOF CATEGORY SORTING:
+                // Convert to lowercase and trim spaces to prevent routing errors
+                const cat = (p.category || '').toLowerCase().trim();
+
+                if (cat === 'paraffin') { 
                     grids.paraffin += buildCard(p); 
                     anyParaffin = true; 
-                } else if (p.category === 'baby') {     
+                } else if (cat === 'baby' || cat === 'baby oil' || cat === 'baby jelly') {     
                     grids.baby     += buildCard(p); 
                     anyBaby     = true; 
-                } else if (p.category === 'jelly' || p.category === 'glycerin') {    
+                } else if (cat === 'jelly' || cat === 'glycerin' || cat === 'vaseline') {    
+                    // This explicitly ensures Glycerin, Vaseline, and Jelly stay unified!
                     grids.jelly    += buildCard(p); 
                     anyJelly    = true; 
                 } else {
-                    // 🌟 Anything else added via Telegram automatically lands here!
+                    // Actual custom categories (like cosmetics, hair, etc.) go here
                     grids.dynamic  += buildCard(p);
                     anyDynamic   = true;
                 }
             });
 
-            // Injects the cards into the HTML grids
+            // Injects the layouts into the DOM grids
             document.getElementById('grid-paraffin').innerHTML = grids.paraffin;
             document.getElementById('grid-baby').innerHTML     = grids.baby;
             document.getElementById('grid-jelly').innerHTML    = grids.jelly;
@@ -250,7 +265,7 @@
             const dynamicGrid = document.getElementById('grid-dynamic');
             if (dynamicGrid) dynamicGrid.innerHTML = grids.dynamic;
 
-            // Automatically hides or reveals sections depending on if they have products
+            // Manage section layout display toggles
             document.getElementById('section-paraffin').style.display = anyParaffin ? '' : 'none';
             document.getElementById('section-baby').style.display     = anyBaby     ? '' : 'none';
             document.getElementById('section-jelly').style.display    = anyJelly    ? '' : 'none';
