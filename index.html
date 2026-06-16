@@ -218,52 +218,37 @@
         }
 
         // ── Render all products from API data ─────────────────────────────────
-      function renderProducts() {
-          function renderProducts() {
+        function renderProducts() {
+            // Keep your original grids object setup
             const grids = { paraffin: '', baby: '', jelly: '', dynamic: '' };
             let anyParaffin = false, anyBaby = false, anyJelly = false, anyDynamic = false;
 
             products.forEach(p => {
                 if (p.hidden) return;
-                
-                // 🛠️ 1. DYNAMIC NAME LOOKUP (Checks every possible backend database key)
-                let trueName = p.name || p.nameOverride || p.productName || p.product_name || '';
-                
-                // If it's still completely empty, create a smart fallback based on its ID or type
-                if (!trueName || trueName.toLowerCase() === 'product') {
-                    if (p.id === 'p17') trueName = 'Glycerin 100ml';
-                    else if (p.id === 'p18') trueName = 'Vaseline Jelly 900ml';
-                    else trueName = `Wholesale Item (${p.id})`;
-                }
-                
-                // Clean up underscores from Telegram commands and replace with spaces
-                p.name = trueName.replace(/_/g, ' ');
 
-                // 🛠️ 2. DYNAMIC CATEGORY LOOKUP (Checks every possible backend category key)
-                let trueCategory = p.category || p.categoryOverride || p.type || '';
-                
-                // Force it to lowercase and remove accidental empty spaces
-                const cat = trueCategory.toLowerCase().trim();
+                // 1. Read the category cleanly without changing the original object
+                const cat = (p.category || '').toLowerCase().trim();
+                const id = String(p.id || '');
 
-                // 🌟 3. ROBUST ROUTING SYSTEM
-                if (cat === 'paraffin' || p.id === 'p14') { 
+                // 2. Safe Routing Rules (Using clean lookups)
+                if (cat === 'paraffin' || id === 'p14') { 
                     grids.paraffin += buildCard(p); 
                     anyParaffin = true; 
                 } else if (cat === 'baby' || cat === 'baby oil' || cat === 'baby jelly') {     
                     grids.baby     += buildCard(p); 
                     anyBaby     = true; 
-                } else if (cat === 'jelly' || cat === 'glycerin' || cat === 'vaseline' || p.id === 'p17' || p.id === 'p18') {    
-                    // Hardcoded IDs p17 and p18 force Glycerin and Vaseline here no matter what!
+                } else if (cat === 'jelly' || cat === 'glycerin' || cat === 'vaseline' || id === 'p17' || id === 'p18') {    
+                    // Forces Glycerin (p17) and Vaseline (p18) straight into the Jelly group!
                     grids.jelly    += buildCard(p); 
                     anyJelly    = true; 
                 } else {
-                    // Real fallback option for future unknown item categories
+                    // Safe catch-all fallback for any other custom category
                     grids.dynamic  += buildCard(p);
                     anyDynamic   = true;
                 }
             });
 
-            // Inject strings directly into your HTML containers
+            // 3. Inject the generated card strings directly into your grids
             document.getElementById('grid-paraffin').innerHTML = grids.paraffin;
             document.getElementById('grid-baby').innerHTML     = grids.baby;
             document.getElementById('grid-jelly').innerHTML    = grids.jelly;
@@ -271,7 +256,7 @@
             const dynamicGrid = document.getElementById('grid-dynamic');
             if (dynamicGrid) dynamicGrid.innerHTML = grids.dynamic;
 
-            // Toggle layout section visibility states dynamically
+            // 4. Toggle section visibilities
             document.getElementById('section-paraffin').style.display = anyParaffin ? '' : 'none';
             document.getElementById('section-baby').style.display     = anyBaby     ? '' : 'none';
             document.getElementById('section-jelly').style.display    = anyJelly    ? '' : 'none';
