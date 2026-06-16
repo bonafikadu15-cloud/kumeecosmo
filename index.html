@@ -218,19 +218,36 @@
         }
 
         // ── Render all products from API data ─────────────────────────────────
-        function renderProducts() {
-            // Keep your original grids object setup
+       function renderProducts() {
             const grids = { paraffin: '', baby: '', jelly: '', dynamic: '' };
             let anyParaffin = false, anyBaby = false, anyJelly = false, anyDynamic = false;
 
             products.forEach(p => {
                 if (p.hidden) return;
 
-                // 1. Read the category cleanly without changing the original object
+                // 🛠️ FIX THE "product" NAME ISSUE RIGHT HERE:
+                // If the backend didn't supply a name, or named it literally "product"
+                let rawName = p.name || p.productName || p.title || '';
+                if (!rawName || rawName.toLowerCase() === 'product') {
+                    // Match by the unique IDs you just created via Telegram!
+                    if (p.id === 'p17') {
+                        p.name = 'Glycerin 100ml';
+                    } else if (p.id === 'p18') {
+                        p.name = 'Vaseline Jelly 900ml';
+                    } else {
+                        p.name = `Wholesale Item (${p.id})`; // Safe backup for future items
+                    }
+                }
+
+                // Clean up any remaining underscores from the Telegram command
+                if (p.name && typeof p.name === 'string') {
+                    p.name = p.name.replace(/_/g, ' ');
+                }
+
                 const cat = (p.category || '').toLowerCase().trim();
                 const id = String(p.id || '');
 
-                // 2. Safe Routing Rules (Using clean lookups)
+                // Safe Routing Rules
                 if (cat === 'paraffin' || id === 'p14') { 
                     grids.paraffin += buildCard(p); 
                     anyParaffin = true; 
@@ -238,17 +255,15 @@
                     grids.baby     += buildCard(p); 
                     anyBaby     = true; 
                 } else if (cat === 'jelly' || cat === 'glycerin' || cat === 'vaseline' || id === 'p17' || id === 'p18') {    
-                    // Forces Glycerin (p17) and Vaseline (p18) straight into the Jelly group!
                     grids.jelly    += buildCard(p); 
                     anyJelly    = true; 
                 } else {
-                    // Safe catch-all fallback for any other custom category
                     grids.dynamic  += buildCard(p);
                     anyDynamic   = true;
                 }
             });
 
-            // 3. Inject the generated card strings directly into your grids
+            // Inject the generated cards into your HTML containers
             document.getElementById('grid-paraffin').innerHTML = grids.paraffin;
             document.getElementById('grid-baby').innerHTML     = grids.baby;
             document.getElementById('grid-jelly').innerHTML    = grids.jelly;
@@ -256,7 +271,7 @@
             const dynamicGrid = document.getElementById('grid-dynamic');
             if (dynamicGrid) dynamicGrid.innerHTML = grids.dynamic;
 
-            // 4. Toggle section visibilities
+            // Manage section visibility states
             document.getElementById('section-paraffin').style.display = anyParaffin ? '' : 'none';
             document.getElementById('section-baby').style.display     = anyBaby     ? '' : 'none';
             document.getElementById('section-jelly').style.display    = anyJelly    ? '' : 'none';
@@ -266,7 +281,6 @@
                 dynamicSection.style.display = anyDynamic ? '' : 'none';
             }
         }
-           
         // ── Fetch live products from backend ──────────────────────────────────
         async function fetchProducts() {
             try {
