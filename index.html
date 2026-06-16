@@ -74,6 +74,22 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="grid-jelly"></div>
             </div>
         </section>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100" id="section-jelly">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-5 border-b border-slate-100 pb-3">
+                <span class="w-1.5 h-4 bg-emerald-600 rounded-full inline-block"></span> Protective Jelly & Glycerin Base
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="grid-jelly"></div>
+        </div>
+    </section>
+
+    <section class="mb-8" id="section-dynamic" style="display: none;">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-5 border-b border-slate-100 pb-3">
+                <span class="w-1.5 h-4 bg-blue-600 rounded-full inline-block"></span> Additional Wholesale Products
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="grid-dynamic"></div>
+        </div>
+    </section>
 
         <!-- Checkout Panel -->
         <section id="checkout-section" class="space-y-4">
@@ -202,24 +218,47 @@
         }
 
         // ── Render all products from API data ─────────────────────────────────
-        function renderProducts() {
-            const grids = { paraffin: '', baby: '', jelly: '' };
-            let anyParaffin = false, anyBaby = false, anyJelly = false;
+       function renderProducts() {
+            // Added 'dynamic' to your grids object
+            const grids = { paraffin: '', baby: '', jelly: '', dynamic: '' };
+            let anyParaffin = false, anyBaby = false, anyJelly = false, anyDynamic = false;
 
             products.forEach(p => {
                 if (p.hidden) return;
-                if (p.category === 'paraffin') { grids.paraffin += buildCard(p); anyParaffin = true; }
-                if (p.category === 'baby')     { grids.baby     += buildCard(p); anyBaby     = true; }
-                if (p.category === 'jelly')    { grids.jelly    += buildCard(p); anyJelly    = true; }
+                
+                if (p.category === 'paraffin') { 
+                    grids.paraffin += buildCard(p); 
+                    anyParaffin = true; 
+                } else if (p.category === 'baby') {     
+                    grids.baby     += buildCard(p); 
+                    anyBaby     = true; 
+                } else if (p.category === 'jelly' || p.category === 'glycerin') {    
+                    grids.jelly    += buildCard(p); 
+                    anyJelly    = true; 
+                } else {
+                    // 🌟 Anything else added via Telegram automatically lands here!
+                    grids.dynamic  += buildCard(p);
+                    anyDynamic   = true;
+                }
             });
 
+            // Injects the cards into the HTML grids
             document.getElementById('grid-paraffin').innerHTML = grids.paraffin;
             document.getElementById('grid-baby').innerHTML     = grids.baby;
             document.getElementById('grid-jelly').innerHTML    = grids.jelly;
+            
+            const dynamicGrid = document.getElementById('grid-dynamic');
+            if (dynamicGrid) dynamicGrid.innerHTML = grids.dynamic;
 
+            // Automatically hides or reveals sections depending on if they have products
             document.getElementById('section-paraffin').style.display = anyParaffin ? '' : 'none';
             document.getElementById('section-baby').style.display     = anyBaby     ? '' : 'none';
             document.getElementById('section-jelly').style.display    = anyJelly    ? '' : 'none';
+            
+            const dynamicSection = document.getElementById('section-dynamic');
+            if (dynamicSection) {
+                dynamicSection.style.display = anyDynamic ? '' : 'none';
+            }
         }
 
         // ── Fetch live products from backend ──────────────────────────────────
