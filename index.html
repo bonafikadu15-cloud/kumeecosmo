@@ -225,57 +225,65 @@ function renderProducts() {
             products.forEach(p => {
                 if (p.hidden) return;
 
-                // 🎯 MATCHING REPLIT DATABASE KEYS EXACTLY:
-                // If backend properties are named differently, extract them cleanly here
+                // 1. SAFELY READ STRINGS WITHOUT OVERWRITING THE ORIGINAL OBJECT
                 const idStr = String(p.productId || p.id || '');
-                let trueName = p.name || p.nameOverride || p.productName || '';
-                let truePrice = p.price || p.priceOverride || 0;
-                let trueCategory = p.category || p.categoryOverride || '';
+                let cat = (p.category || p.categoryOverride || '').toLowerCase().trim();
+                
+                // Keep track of the original name, or use whatever fallback exists
+                let finalName = p.name || p.productName || p.nameOverride || '';
 
-                // Smart fallback hardcoding for your new Telegram products
-                if (idStr === 'p17' || truePrice == 125) {
-                    if (!trueName || trueName.toLowerCase() === 'product') trueName = 'Glycerin 100ml';
-                    if (!trueCategory) trueCategory = 'jelly';
-                }
-                if (idStr === 'p18' || truePrice == 750) {
-                    if (!trueName || trueName.toLowerCase() === 'product') trueName = 'Vaseline Jelly 900ml';
-                    if (!trueCategory) trueCategory = 'jelly';
-                }
-                if (idStr === 'p19' || truePrice == 85) {
-                    if (!trueName || trueName.toLowerCase() === 'product') trueName = 'Vaseline 40g';
-                    if (!trueCategory) trueCategory = 'jelly';
-                }
-
-                // If a brand new dynamic item comes in with underscores, clean them up
-                if (trueName && typeof trueName === 'string') {
-                    trueName = trueName.replace(/_/g, ' ');
+                // 2. FORCE NAME & CATEGORY FOR YOUR NEW PRODUCTS ONLY
+                // This leaves your original items completely untouched!
+                const priceNum = parseInt(p.price || p.priceOverride || 0, 10);
+                
+                if (idStr === 'p17' || priceNum === 125) {
+                    finalName = 'Glycerin 100ml';
+                    cat = 'jelly';
+                } else if (idStr === 'p18' || priceNum === 750) {
+                    finalName = 'Vaseline Jelly 900ml';
+                    cat = 'jelly';
+                } else if (idStr === 'p19' || priceNum === 85) {
+                    finalName = 'Vaseline 40g';
+                    cat = 'jelly';
                 }
 
-                // Standardize fields so buildCard(p) can read them safely
-                p.id = idStr;
-                p.name = trueName;
-                p.price = truePrice;
-                p.category = trueCategory;
+                // If any item still turns up with the generic string "product", assign a safe backup
+                if (!finalName || finalName.toLowerCase() === 'product') {
+                    finalName = `Wholesale Item (${idStr})`;
+                }
 
-                const cat = trueCategory.toLowerCase().trim();
+                // Clean up underscores from Telegram strings safely
+                if (finalName && typeof finalName === 'string') {
+                    finalName = finalName.replace(/_/g, ' ');
+                }
 
-                // Safe Routing Rules based on matching categories
+                // 3. SECURE PREPARATION FOR YOUR EXISTING buildCard(p) FUNCTION
+                // We create a temporary safe copy so your old template doesn't crash or lose data
+                const safeProduct = {
+                    ...p,
+                    id: idStr,
+                    name: finalName,
+                    price: priceNum || p.price,
+                    category: cat
+                };
+
+                // 4. CHOOSE THE CORRECT CONTAINER GRID
                 if (cat === 'paraffin' || idStr === 'p14') { 
-                    grids.paraffin += buildCard(p); 
+                    grids.paraffin += buildCard(safeProduct); 
                     anyParaffin = true; 
                 } else if (cat === 'baby' || cat === 'baby oil' || cat === 'baby jelly') {     
-                    grids.baby     += buildCard(p); 
+                    grids.baby     += buildCard(safeProduct); 
                     anyBaby     = true; 
                 } else if (cat === 'jelly' || cat === 'glycerin' || cat === 'vaseline') {    
-                    grids.jelly    += buildCard(p); 
+                    grids.jelly    += buildCard(safeProduct); 
                     anyJelly    = true; 
                 } else {
-                    grids.dynamic  += buildCard(p);
+                    grids.dynamic  += buildCard(safeProduct);
                     anyDynamic   = true;
                 }
             });
 
-            // Inject the elements back to the webpage layout grids
+            // 5. INJECT GENERATED STRINGS INTO YOUR SITE GRID LAYOUTS
             document.getElementById('grid-paraffin').innerHTML = grids.paraffin;
             document.getElementById('grid-baby').innerHTML     = grids.baby;
             document.getElementById('grid-jelly').innerHTML    = grids.jelly;
@@ -283,7 +291,7 @@ function renderProducts() {
             const dynamicGrid = document.getElementById('grid-dynamic');
             if (dynamicGrid) dynamicGrid.innerHTML = grids.dynamic;
 
-            // Toggle visibility classes dynamically
+            // 6. TOGGLE VISIBILITY TABS
             document.getElementById('section-paraffin').style.display = anyParaffin ? '' : 'none';
             document.getElementById('section-baby').style.display     = anyBaby     ? '' : 'none';
             document.getElementById('section-jelly').style.display    = anyJelly    ? '' : 'none';
