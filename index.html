@@ -218,45 +218,55 @@
         }
 
         // ── Render all products from API data ─────────────────────────────────
-       function renderProducts() {
+function renderProducts() {
             const grids = { paraffin: '', baby: '', jelly: '', dynamic: '' };
             let anyParaffin = false, anyBaby = false, anyJelly = false, anyDynamic = false;
 
             products.forEach(p => {
                 if (p.hidden) return;
 
-                // Convert price to a clean number for checking
-                const priceNum = parseInt(p.price, 10) || 0;
-                const cat = (p.category || '').toLowerCase().trim();
+                // 🎯 MATCHING REPLIT DATABASE KEYS EXACTLY:
+                // If backend properties are named differently, extract them cleanly here
+                const idStr = String(p.productId || p.id || '');
+                let trueName = p.name || p.nameOverride || p.productName || '';
+                let truePrice = p.price || p.priceOverride || 0;
+                let trueCategory = p.category || p.categoryOverride || '';
 
-                // 🌟 FIX THE NAME & CATEGORY BY PRICE MATCHING 🌟
-                if (priceNum === 125) {
-                    p.name = 'Glycerin 100ml';
-                    p.category = 'jelly';
-                } else if (priceNum === 750) {
-                    p.name = 'Vaseline Jelly 900ml';
-                    p.category = 'jelly';
-                } else if (priceNum === 85) {
-                    p.name = 'Vaseline 40g';
-                    p.category = 'jelly';
-                } else {
-                    // For your original products, fix any underscores just in case
-                    if (p.name && typeof p.name === 'string') {
-                        p.name = p.name.replace(/_/g, ' ');
-                    }
+                // Smart fallback hardcoding for your new Telegram products
+                if (idStr === 'p17' || truePrice == 125) {
+                    if (!trueName || trueName.toLowerCase() === 'product') trueName = 'Glycerin 100ml';
+                    if (!trueCategory) trueCategory = 'jelly';
+                }
+                if (idStr === 'p18' || truePrice == 750) {
+                    if (!trueName || trueName.toLowerCase() === 'product') trueName = 'Vaseline Jelly 900ml';
+                    if (!trueCategory) trueCategory = 'jelly';
+                }
+                if (idStr === 'p19' || truePrice == 85) {
+                    if (!trueName || trueName.toLowerCase() === 'product') trueName = 'Vaseline 40g';
+                    if (!trueCategory) trueCategory = 'jelly';
                 }
 
-                // Re-read category after our price check fix
-                const finalCat = (p.category || '').toLowerCase().trim();
+                // If a brand new dynamic item comes in with underscores, clean them up
+                if (trueName && typeof trueName === 'string') {
+                    trueName = trueName.replace(/_/g, ' ');
+                }
 
-                // Safe Routing Rules
-                if (finalCat === 'paraffin') { 
+                // Standardize fields so buildCard(p) can read them safely
+                p.id = idStr;
+                p.name = trueName;
+                p.price = truePrice;
+                p.category = trueCategory;
+
+                const cat = trueCategory.toLowerCase().trim();
+
+                // Safe Routing Rules based on matching categories
+                if (cat === 'paraffin' || idStr === 'p14') { 
                     grids.paraffin += buildCard(p); 
                     anyParaffin = true; 
-                } else if (finalCat === 'baby' || finalCat === 'baby oil' || finalCat === 'baby jelly') {     
+                } else if (cat === 'baby' || cat === 'baby oil' || cat === 'baby jelly') {     
                     grids.baby     += buildCard(p); 
                     anyBaby     = true; 
-                } else if (finalCat === 'jelly' || finalCat === 'glycerin' || finalCat === 'vaseline') {    
+                } else if (cat === 'jelly' || cat === 'glycerin' || cat === 'vaseline') {    
                     grids.jelly    += buildCard(p); 
                     anyJelly    = true; 
                 } else {
@@ -265,7 +275,7 @@
                 }
             });
 
-            // Inject the generated cards into your HTML containers
+            // Inject the elements back to the webpage layout grids
             document.getElementById('grid-paraffin').innerHTML = grids.paraffin;
             document.getElementById('grid-baby').innerHTML     = grids.baby;
             document.getElementById('grid-jelly').innerHTML    = grids.jelly;
@@ -273,7 +283,7 @@
             const dynamicGrid = document.getElementById('grid-dynamic');
             if (dynamicGrid) dynamicGrid.innerHTML = grids.dynamic;
 
-            // Manage section visibility states
+            // Toggle visibility classes dynamically
             document.getElementById('section-paraffin').style.display = anyParaffin ? '' : 'none';
             document.getElementById('section-baby').style.display     = anyBaby     ? '' : 'none';
             document.getElementById('section-jelly').style.display    = anyJelly    ? '' : 'none';
@@ -283,92 +293,6 @@
                 dynamicSection.style.display = anyDynamic ? '' : 'none';
             }
         }
-        // ── Fetch live products from backend ──────────────────────────────────
-        async function fetchProducts() {
-            try {
-                const res  = await fetch(API_BASE + '/api/products', { cache: 'no-store' });
-                if (!res.ok) return;
-                const data = await res.json();
-                products = data;
-
-                // Remove hidden items from cart automatically
-                data.forEach(p => {
-                    if (p.hidden && cart[p.id]) {
-                        delete cart[p.id];
-                    }
-                    // Update price in cart if changed
-                    if (cart[p.id]) {
-                        cart[p.id].price = p.price;
-                        cart[p.id].total = p.price * cart[p.id].quantity;
-                    }
-                });
-
-                renderProducts();
-                updateInvoice();
-            } catch (e) {
-                console.error('Failed to fetch products:', e);
-            }
-        }
-
-        // ── Quantity change handler ───────────────────────────────────────────
-        function handleQtyChange(input) {
-            const card  = input.closest('[data-id]');
-            const id    = card.dataset.id;
-            const name  = card.dataset.name;
-            const price = parseInt(card.dataset.price);
-            const qty   = parseInt(input.value) || 0;
-
-            if (qty > 0) {
-                cart[id] = { name, price, quantity: qty, total: price * qty };
-            } else {
-                delete cart[id];
-            }
-            updateInvoice();
-        }
-
-        // ── Rebuild the invoice panel ─────────────────────────────────────────
-        function updateInvoice() {
-            const cartList   = document.getElementById('cart-list');
-            const emptyMsg   = document.getElementById('empty-cart-msg');
-            const totalRow   = document.getElementById('running-total-row');
-            const totalVal   = document.getElementById('running-total-value');
-
-            // Clear old rows
-            cartList.querySelectorAll('.cart-row').forEach(r => r.remove());
-
-            let totalUnits = 0, grandTotal = 0, variety = 0;
-
-            for (const item of Object.values(cart)) {
-                variety++;
-                totalUnits += item.quantity;
-                grandTotal += item.total;
-
-                const row = document.createElement('div');
-                row.className = 'cart-row flex items-center justify-between text-xs bg-white p-3 rounded-xl border border-slate-100 font-medium shadow-sm';
-                row.innerHTML = `
-                    <div class="max-w-[70%]">
-                        <p class="font-bold text-slate-800 truncate">${item.name}</p>
-                        <p class="text-[10px] text-slate-400">Qty: ${item.quantity} × ${item.price} ETB</p>
-                    </div>
-                    <span class="font-mono font-bold text-slate-700">${item.total.toLocaleString()} ETB</span>`;
-                cartList.appendChild(row);
-            }
-
-            if (variety > 0) {
-                emptyMsg.classList.add('hidden');
-                totalRow.classList.remove('hidden');
-                totalVal.textContent = grandTotal.toLocaleString() + ' ETB';
-            } else {
-                emptyMsg.classList.remove('hidden');
-                totalRow.classList.add('hidden');
-            }
-
-            document.getElementById('header-cart-count').textContent = totalUnits + ' Items';
-            document.getElementById('item-variety-count').textContent = variety + ' types chosen';
-            document.getElementById('invoice-total-qty').textContent  = totalUnits + ' Units';
-            document.getElementById('invoice-grand-total').textContent = grandTotal.toLocaleString() + ' ETB';
-        }
-
         // ── Submit order through backend API ──────────────────────────────────
         async function submitOrder() {
             const name     = document.getElementById('client-name').value.trim();
