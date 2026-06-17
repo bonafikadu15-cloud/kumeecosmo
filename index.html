@@ -225,36 +225,38 @@
             products.forEach(p => {
                 if (p.hidden) return;
 
-                // 🛠️ FIX THE "product" NAME ISSUE RIGHT HERE:
-                // If the backend didn't supply a name, or named it literally "product"
-                let rawName = p.name || p.productName || p.title || '';
-                if (!rawName || rawName.toLowerCase() === 'product') {
-                    // Match by the unique IDs you just created via Telegram!
-                    if (p.id === 'p17') {
-                        p.name = 'Glycerin 100ml';
-                    } else if (p.id === 'p18') {
-                        p.name = 'Vaseline Jelly 900ml';
-                    } else {
-                        p.name = `Wholesale Item (${p.id})`; // Safe backup for future items
+                // Convert price to a clean number for checking
+                const priceNum = parseInt(p.price, 10) || 0;
+                const cat = (p.category || '').toLowerCase().trim();
+
+                // 🌟 FIX THE NAME & CATEGORY BY PRICE MATCHING 🌟
+                if (priceNum === 125) {
+                    p.name = 'Glycerin 100ml';
+                    p.category = 'jelly';
+                } else if (priceNum === 750) {
+                    p.name = 'Vaseline Jelly 900ml';
+                    p.category = 'jelly';
+                } else if (priceNum === 85) {
+                    p.name = 'Vaseline 40g';
+                    p.category = 'jelly';
+                } else {
+                    // For your original products, fix any underscores just in case
+                    if (p.name && typeof p.name === 'string') {
+                        p.name = p.name.replace(/_/g, ' ');
                     }
                 }
 
-                // Clean up any remaining underscores from the Telegram command
-                if (p.name && typeof p.name === 'string') {
-                    p.name = p.name.replace(/_/g, ' ');
-                }
-
-                const cat = (p.category || '').toLowerCase().trim();
-                const id = String(p.id || '');
+                // Re-read category after our price check fix
+                const finalCat = (p.category || '').toLowerCase().trim();
 
                 // Safe Routing Rules
-                if (cat === 'paraffin' || id === 'p14') { 
+                if (finalCat === 'paraffin') { 
                     grids.paraffin += buildCard(p); 
                     anyParaffin = true; 
-                } else if (cat === 'baby' || cat === 'baby oil' || cat === 'baby jelly') {     
+                } else if (finalCat === 'baby' || finalCat === 'baby oil' || finalCat === 'baby jelly') {     
                     grids.baby     += buildCard(p); 
                     anyBaby     = true; 
-                } else if (cat === 'jelly' || cat === 'glycerin' || cat === 'vaseline' || id === 'p17' || id === 'p18') {    
+                } else if (finalCat === 'jelly' || finalCat === 'glycerin' || finalCat === 'vaseline') {    
                     grids.jelly    += buildCard(p); 
                     anyJelly    = true; 
                 } else {
