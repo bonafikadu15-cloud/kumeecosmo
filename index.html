@@ -217,24 +217,22 @@
             </div>`;
         }
 
-        // ── Render all products from API data ─────────────────────────────────
+     // ── Render all products from API data ─────────────────────────────────
 function renderProducts() {
             const grids = { paraffin: '', baby: '', jelly: '', dynamic: '' };
             let anyParaffin = false, anyBaby = false, anyJelly = false, anyDynamic = false;
 
             products.forEach(p => {
-                if (p.hidden) return;
+                if (!p || p.hidden) return;
 
-                // 1. SAFELY EXTRACT STRINGS AND VALUES
-                const idStr = String(p.productId || p.id || '').toLowerCase().trim();
+                // 1. SAFELY EXTRACT VALS (Guards against numbers throwing .toLowerCase errors)
+                const idStr = String(p.productId !== undefined ? p.productId : (p.id !== undefined ? p.id : '')).toLowerCase().trim();
                 
-                // Get price as both a clean number and a string text comparison
                 const priceNum = parseInt(p.price || p.priceOverride || 0, 10);
                 const priceStr = String(p.price || p.priceOverride || '').trim();
                 
-                // Default category fallback
-                let cat = (p.category || p.categoryOverride || '').toLowerCase().trim();
-                let finalName = p.name || p.productName || p.nameOverride || '';
+                let cat = String(p.category || p.categoryOverride || '').toLowerCase().trim();
+                let finalName = String(p.name || p.productName || p.nameOverride || '').trim();
 
                 // 2. STUBBORN PRICE & ID FORCING MATCH LOOKUPS
                 if (idStr === 'p17' || priceNum === 125 || priceStr === '125') {
@@ -248,32 +246,32 @@ function renderProducts() {
                     cat = 'jelly';
                 }
 
-                // If any item (including old ones) accidentally ends up blank or named "product"
+                // Fallback context validation
                 if (!finalName || finalName.toLowerCase() === 'product' || finalName.toLowerCase() === 'products') {
-                    if (idStr === 'p14') {
-                        finalName = 'Paraffin Wax'; // Quick fallback safety check for p14
+                    if (idStr === '14' || idStr === 'p14') {
+                        finalName = 'Paraffin Wax';
                         cat = 'paraffin';
                     } else {
                         finalName = `Wholesale Item (${idStr.toUpperCase()})`;
                     }
                 }
 
-                // Clean up underscores automatically
-                if (finalName && typeof finalName === 'string') {
+                // Clean up underscores cleanly
+                if (finalName) {
                     finalName = finalName.replace(/_/g, ' ');
                 }
 
-                // 3. SECURE RE-PACKAGING FOR YOUR buildCard TEMPLATE
+                // 3. RE-PACK OBJECT PRECISELY TO PREVENT BREAKING ORIGINAL TEMPLATES
                 const safeProduct = {
                     ...p,
-                    id: p.id || p.productId || idStr,
+                    id: p.id !== undefined ? p.id : idStr, 
                     name: finalName,
-                    price: priceNum || p.price,
-                    category: cat
+                    price: p.price || priceNum,
+                    category: p.category || cat
                 };
 
-                // 4. ROUTE DIRECTLY INTO CORRECT HTML SECTIONS
-                if (cat === 'paraffin' || idStr === 'p14') { 
+                // 4. ROUTE ACCORDINGLY
+                if (cat === 'paraffin' || idStr === '14' || idStr === 'p14') { 
                     grids.paraffin += buildCard(safeProduct); 
                     anyParaffin = true; 
                 } else if (cat === 'baby' || cat === 'baby oil' || cat === 'baby jelly') {     
