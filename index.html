@@ -216,37 +216,42 @@
                 </div>
             </div>`;
         }
-
-     // ── Render all products from API data ─────────────────────────────────
+// ── Render all products from API data ─────────────────────────────────
 function renderProducts() {
             const grids = { paraffin: '', baby: '', jelly: '', dynamic: '' };
             let anyParaffin = false, anyBaby = false, anyJelly = false, anyDynamic = false;
 
+            // 🌟 TELEGRAM DEBUGGING BOX:
+            // This prints the raw data right at the top of your shop screen!
+            try {
+                const debugDiv = document.createElement('div');
+                debugDiv.style = "background:#fff; color:#000; padding:10px; font-size:10px; border:2px solid red; max-height:150px; overflow:scroll; z-index:9999; position:relative;";
+                debugDiv.innerHTML = "<strong>Raw Server Response:</strong><br>" + JSON.stringify(products).substring(0, 800);
+                document.body.insertBefore(debugDiv, document.body.firstChild);
+            } catch(e) {}
+
+            if (!products || !Array.isArray(products)) return;
+
             products.forEach(p => {
                 if (!p || p.hidden) return;
 
-                // 1. SAFELY EXTRACT VALS (Guards against numbers throwing .toLowerCase errors)
                 const idStr = String(p.productId !== undefined ? p.productId : (p.id !== undefined ? p.id : '')).toLowerCase().trim();
-                
                 const priceNum = parseInt(p.price || p.priceOverride || 0, 10);
-                const priceStr = String(p.price || p.priceOverride || '').trim();
                 
                 let cat = String(p.category || p.categoryOverride || '').toLowerCase().trim();
                 let finalName = String(p.name || p.productName || p.nameOverride || '').trim();
 
-                // 2. STUBBORN PRICE & ID FORCING MATCH LOOKUPS
-                if (idStr === 'p17' || priceNum === 125 || priceStr === '125') {
+                if (idStr === 'p17' || priceNum === 125) {
                     finalName = 'Glycerin 100ml';
                     cat = 'jelly';
-                } else if (idStr === 'p18' || priceNum === 750 || priceStr === '750') {
+                } else if (idStr === 'p18' || priceNum === 750) {
                     finalName = 'Vaseline Jelly 900ml';
                     cat = 'jelly';
-                } else if (idStr === 'p19' || priceNum === 85 || priceStr === '85') {
+                } else if (idStr === 'p19' || priceNum === 85) {
                     finalName = 'Vaseline 40g';
                     cat = 'jelly';
                 }
 
-                // Fallback context validation
                 if (!finalName || finalName.toLowerCase() === 'product' || finalName.toLowerCase() === 'products') {
                     if (idStr === '14' || idStr === 'p14') {
                         finalName = 'Paraffin Wax';
@@ -256,12 +261,10 @@ function renderProducts() {
                     }
                 }
 
-                // Clean up underscores cleanly
                 if (finalName) {
                     finalName = finalName.replace(/_/g, ' ');
                 }
 
-                // 3. RE-PACK OBJECT PRECISELY TO PREVENT BREAKING ORIGINAL TEMPLATES
                 const safeProduct = {
                     ...p,
                     id: p.id !== undefined ? p.id : idStr, 
@@ -270,7 +273,6 @@ function renderProducts() {
                     category: p.category || cat
                 };
 
-                // 4. ROUTE ACCORDINGLY
                 if (cat === 'paraffin' || idStr === '14' || idStr === 'p14') { 
                     grids.paraffin += buildCard(safeProduct); 
                     anyParaffin = true; 
@@ -286,7 +288,6 @@ function renderProducts() {
                 }
             });
 
-            // 5. INJECT OUTPUTS INTO DOM CONSOLE CONTAINERS
             document.getElementById('grid-paraffin').innerHTML = grids.paraffin;
             document.getElementById('grid-baby').innerHTML     = grids.baby;
             document.getElementById('grid-jelly').innerHTML    = grids.jelly;
@@ -294,7 +295,6 @@ function renderProducts() {
             const dynamicGrid = document.getElementById('grid-dynamic');
             if (dynamicGrid) dynamicGrid.innerHTML = grids.dynamic;
 
-            // 6. LAYOUT TAB TOGGLE STATES
             document.getElementById('section-paraffin').style.display = anyParaffin ? '' : 'none';
             document.getElementById('section-baby').style.display     = anyBaby     ? '' : 'none';
             document.getElementById('section-jelly').style.display    = anyJelly    ? '' : 'none';
@@ -304,6 +304,7 @@ function renderProducts() {
                 dynamicSection.style.display = anyDynamic ? '' : 'none';
             }
         }
+        // ── Submit order through backend API ──────────────────────────────────
         // ── Submit order through backend API ──────────────────────────────────
         async function submitOrder() {
             const name     = document.getElementById('client-name').value.trim();
