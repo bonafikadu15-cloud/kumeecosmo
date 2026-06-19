@@ -6,7 +6,7 @@
     <title>Kumee Cosmo — Premium TAFLEN Wholesale</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
+    <style> 
         html { scroll-behavior: smooth; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
@@ -74,6 +74,22 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="grid-jelly"></div>
             </div>
         </section>
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100" id="section-jelly">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-5 border-b border-slate-100 pb-3">
+                <span class="w-1.5 h-4 bg-emerald-600 rounded-full inline-block"></span> Protective Jelly & Glycerin Base
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="grid-jelly"></div>
+        </div>
+    </section>
+
+    <section class="mb-8" id="section-dynamic" style="display: none;">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-5 border-b border-slate-100 pb-3">
+                <span class="w-1.5 h-4 bg-blue-600 rounded-full inline-block"></span> Additional Wholesale Products
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="grid-dynamic"></div>
+        </div>
+    </section>
 
         <!-- Checkout Panel -->
         <section id="checkout-section" class="space-y-4">
@@ -149,7 +165,7 @@
 
     <script>
         // ── Config ────────────────────────────────────────────────────────────
-        const API_BASE   = "https://bonafikadu15-cloud.github.io/kumeecosmo/";
+        const API_BASE   = "https://code-builder--bonafikadu15.replit.app";
         const OWNER_ID   = 5966033751;
         const POLL_MS    = 30000;
 
@@ -202,112 +218,94 @@
         }
 
         // ── Render all products from API data ─────────────────────────────────
-        function renderProducts() {
-            const grids = { paraffin: '', baby: '', jelly: '' };
-            let anyParaffin = false, anyBaby = false, anyJelly = false;
+function renderProducts() {
+            const grids = { paraffin: '', baby: '', jelly: '', dynamic: '' };
+            let anyParaffin = false, anyBaby = false, anyJelly = false, anyDynamic = false;
 
             products.forEach(p => {
                 if (p.hidden) return;
-                if (p.category === 'paraffin') { grids.paraffin += buildCard(p); anyParaffin = true; }
-                if (p.category === 'baby')     { grids.baby     += buildCard(p); anyBaby     = true; }
-                if (p.category === 'jelly')    { grids.jelly    += buildCard(p); anyJelly    = true; }
+
+                // 1. SAFELY EXTRACT STRINGS AND VALUES
+                const idStr = String(p.productId || p.id || '').toLowerCase().trim();
+                
+                // Get price as both a clean number and a string text comparison
+                const priceNum = parseInt(p.price || p.priceOverride || 0, 10);
+                const priceStr = String(p.price || p.priceOverride || '').trim();
+                
+                // Default category fallback
+                let cat = (p.category || p.categoryOverride || '').toLowerCase().trim();
+                let finalName = p.name || p.productName || p.nameOverride || '';
+
+                // 2. STUBBORN PRICE & ID FORCING MATCH LOOKUPS
+                if (idStr === 'p17' || priceNum === 125 || priceStr === '125') {
+                    finalName = 'Glycerin 100ml';
+                    cat = 'jelly';
+                } else if (idStr === 'p18' || priceNum === 750 || priceStr === '750') {
+                    finalName = 'Vaseline Jelly 900ml';
+                    cat = 'jelly';
+                } else if (idStr === 'p19' || priceNum === 85 || priceStr === '85') {
+                    finalName = 'Vaseline 40g';
+                    cat = 'jelly';
+                }
+
+                // If any item (including old ones) accidentally ends up blank or named "product"
+                if (!finalName || finalName.toLowerCase() === 'product' || finalName.toLowerCase() === 'products') {
+                    if (idStr === 'p14') {
+                        finalName = 'Paraffin Wax'; // Quick fallback safety check for p14
+                        cat = 'paraffin';
+                    } else {
+                        finalName = `Wholesale Item (${idStr.toUpperCase()})`;
+                    }
+                }
+
+                // Clean up underscores automatically
+                if (finalName && typeof finalName === 'string') {
+                    finalName = finalName.replace(/_/g, ' ');
+                }
+
+                // 3. SECURE RE-PACKAGING FOR YOUR buildCard TEMPLATE
+                const safeProduct = {
+                    ...p,
+                    id: p.id || p.productId || idStr,
+                    name: finalName,
+                    price: priceNum || p.price,
+                    category: cat
+                };
+
+                // 4. ROUTE DIRECTLY INTO CORRECT HTML SECTIONS
+                if (cat === 'paraffin' || idStr === 'p14') { 
+                    grids.paraffin += buildCard(safeProduct); 
+                    anyParaffin = true; 
+                } else if (cat === 'baby' || cat === 'baby oil' || cat === 'baby jelly') {     
+                    grids.baby     += buildCard(safeProduct); 
+                    anyBaby     = true; 
+                } else if (cat === 'jelly' || cat === 'glycerin' || cat === 'vaseline') {    
+                    grids.jelly    += buildCard(safeProduct); 
+                    anyJelly    = true; 
+                } else {
+                    grids.dynamic  += buildCard(safeProduct);
+                    anyDynamic   = true;
+                }
             });
 
+            // 5. INJECT OUTPUTS INTO DOM CONSOLE CONTAINERS
             document.getElementById('grid-paraffin').innerHTML = grids.paraffin;
             document.getElementById('grid-baby').innerHTML     = grids.baby;
             document.getElementById('grid-jelly').innerHTML    = grids.jelly;
+            
+            const dynamicGrid = document.getElementById('grid-dynamic');
+            if (dynamicGrid) dynamicGrid.innerHTML = grids.dynamic;
 
+            // 6. LAYOUT TAB TOGGLE STATES
             document.getElementById('section-paraffin').style.display = anyParaffin ? '' : 'none';
             document.getElementById('section-baby').style.display     = anyBaby     ? '' : 'none';
             document.getElementById('section-jelly').style.display    = anyJelly    ? '' : 'none';
-        }
-
-        // ── Fetch live products from backend ──────────────────────────────────
-        async function fetchProducts() {
-            try {
-                const res  = await fetch(API_BASE + '/api/products', { cache: 'no-store' });
-                if (!res.ok) return;
-                const data = await res.json();
-                products = data;
-
-                // Remove hidden items from cart automatically
-                data.forEach(p => {
-                    if (p.hidden && cart[p.id]) {
-                        delete cart[p.id];
-                    }
-                    // Update price in cart if changed
-                    if (cart[p.id]) {
-                        cart[p.id].price = p.price;
-                        cart[p.id].total = p.price * cart[p.id].quantity;
-                    }
-                });
-
-                renderProducts();
-                updateInvoice();
-            } catch (e) {
-                console.error('Failed to fetch products:', e);
+            
+            const dynamicSection = document.getElementById('section-dynamic');
+            if (dynamicSection) {
+                dynamicSection.style.display = anyDynamic ? '' : 'none';
             }
         }
-
-        // ── Quantity change handler ───────────────────────────────────────────
-        function handleQtyChange(input) {
-            const card  = input.closest('[data-id]');
-            const id    = card.dataset.id;
-            const name  = card.dataset.name;
-            const price = parseInt(card.dataset.price);
-            const qty   = parseInt(input.value) || 0;
-
-            if (qty > 0) {
-                cart[id] = { name, price, quantity: qty, total: price * qty };
-            } else {
-                delete cart[id];
-            }
-            updateInvoice();
-        }
-
-        // ── Rebuild the invoice panel ─────────────────────────────────────────
-        function updateInvoice() {
-            const cartList   = document.getElementById('cart-list');
-            const emptyMsg   = document.getElementById('empty-cart-msg');
-            const totalRow   = document.getElementById('running-total-row');
-            const totalVal   = document.getElementById('running-total-value');
-
-            // Clear old rows
-            cartList.querySelectorAll('.cart-row').forEach(r => r.remove());
-
-            let totalUnits = 0, grandTotal = 0, variety = 0;
-
-            for (const item of Object.values(cart)) {
-                variety++;
-                totalUnits += item.quantity;
-                grandTotal += item.total;
-
-                const row = document.createElement('div');
-                row.className = 'cart-row flex items-center justify-between text-xs bg-white p-3 rounded-xl border border-slate-100 font-medium shadow-sm';
-                row.innerHTML = `
-                    <div class="max-w-[70%]">
-                        <p class="font-bold text-slate-800 truncate">${item.name}</p>
-                        <p class="text-[10px] text-slate-400">Qty: ${item.quantity} × ${item.price} ETB</p>
-                    </div>
-                    <span class="font-mono font-bold text-slate-700">${item.total.toLocaleString()} ETB</span>`;
-                cartList.appendChild(row);
-            }
-
-            if (variety > 0) {
-                emptyMsg.classList.add('hidden');
-                totalRow.classList.remove('hidden');
-                totalVal.textContent = grandTotal.toLocaleString() + ' ETB';
-            } else {
-                emptyMsg.classList.remove('hidden');
-                totalRow.classList.add('hidden');
-            }
-
-            document.getElementById('header-cart-count').textContent = totalUnits + ' Items';
-            document.getElementById('item-variety-count').textContent = variety + ' types chosen';
-            document.getElementById('invoice-total-qty').textContent  = totalUnits + ' Units';
-            document.getElementById('invoice-grand-total').textContent = grandTotal.toLocaleString() + ' ETB';
-        }
-
         // ── Submit order through backend API ──────────────────────────────────
         async function submitOrder() {
             const name     = document.getElementById('client-name').value.trim();
