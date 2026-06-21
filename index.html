@@ -359,17 +359,17 @@
                     throw new Error(err.error || 'Order failed');
                 }
 
-                alert('🎯 Manifest transmitted to the Kumee Cosmo desk successfully.');
+                alert('🎯 your order is successfully transmitted, Thank you.');
                 if (window.Telegram?.WebApp) {
                     window.Telegram.WebApp.close();
                 } else {
                     window.location.reload();
                 }
             } catch (err) {
-                alert('Transmission endpoint communication breakdown.');
+                alert('sorry Transmission endpoint communication breakdown, please try again.');
                 console.error(err);
                 btn.disabled = false;
-                btn.textContent = '🚀 Submit Order to Telegram Desk';
+                btn.textContent = '🚀 Submit your Order';
             }
         }
 
