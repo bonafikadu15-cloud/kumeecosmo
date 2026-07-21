@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-    <title>Kumee Cosmo — Premium TAFLEN Wholesale</title>
+    <title>Kumee Cosmo — TAFLEN Wholesale</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
@@ -69,7 +69,7 @@
             <!-- Jelly & Glycerin -->
             <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100" id="section-jelly">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-5 border-b border-slate-100 pb-3">
-                    <span class="w-1.5 h-4 bg-emerald-600 rounded-full inline-block"></span> Protective Jelly & Glycerin Base
+                    <span class="w-1.5 h-4 bg-emerald-600 rounded-full inline-block"></span> Vaseline, Glycerin & Alcohol
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="grid-jelly"></div>
             </div>
@@ -142,15 +142,16 @@
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Kumee Cosmo © 2026</p>
             <p class="text-[10px] text-slate-400">Authorized Wholesale Platform</p>
             <p class="text-[11px] text-emerald-700 font-bold pt-2">
-                Developed by <a href="https://t.me/obamafike" target="_blank" class="underline hover:text-emerald-900">@obamafike</a>
+                Join our Telegram <a href="https://t.me/abdii52525" target="_blank" class="underline hover:text-emerald-900">@abdii52525</a>
             </p>
         </div>
     </footer>
 
     <script>
-        // ── Config ────────────────────────────────────────────────────────────
-        // IMPORTANT: Replace this with your published Replit app URL
+        // ============================================================
+        // CONFIG: Replace this URL with your published Replit app URL
         // Example: "https://kumee-cosmo-12345.replit.app/api"
+        // ============================================================
         const API_BASE = "https://REPLACE_WITH_YOUR_REPLIT_APP.replit.app/api";
 
         const OWNER_ID = 5264691339;
@@ -161,24 +162,32 @@
 
         // Fallback product list if the API is unreachable
         const FALLBACK_PRODUCTS = [
-          { id:1, name:"TAFLEN White Paraffin 100ml", category:"paraffin", price:45, defaultPrice:45, hidden:false },
-          { id:2, name:"TAFLEN White Paraffin 200ml", category:"paraffin", price:85, defaultPrice:85, hidden:false },
-          { id:3, name:"TAFLEN White Paraffin 500ml", category:"paraffin", price:195, defaultPrice:195, hidden:false },
-          { id:4, name:"TAFLEN White Paraffin 1L", category:"paraffin", price:350, defaultPrice:350, hidden:false },
-          { id:5, name:"TAFLEN Liquid Paraffin 100ml", category:"paraffin", price:50, defaultPrice:50, hidden:false },
-          { id:6, name:"TAFLEN Liquid Paraffin 200ml", category:"paraffin", price:95, defaultPrice:95, hidden:false },
-          { id:7, name:"TAFLEN Baby Diaper Rash Cream 50g", category:"baby", price:75, defaultPrice:75, hidden:false },
-          { id:8, name:"TAFLEN Baby Powder 100g", category:"baby", price:55, defaultPrice:55, hidden:false },
-          { id:9, name:"TAFLEN Baby Oil 100ml", category:"baby", price:60, defaultPrice:60, hidden:false },
-          { id:10, name:"TAFLEN Baby Shampoo 200ml", category:"baby", price:85, defaultPrice:85, hidden:false },
-          { id:11, name:"TAFLEN Baby Lotion 200ml", category:"baby", price:80, defaultPrice:80, hidden:false },
-          { id:12, name:"TAFLEN Baby Sunscreen SPF30 50ml", category:"baby", price:120, defaultPrice:120, hidden:false },
-          { id:13, name:"TAFLEN Petroleum Jelly 100g", category:"jelly", price:40, defaultPrice:40, hidden:false },
-          { id:14, name:"TAFLEN Petroleum Jelly 200g", category:"jelly", price:70, defaultPrice:70, hidden:false },
-          { id:15, name:"TAFLEN Glycerin 100ml", category:"jelly", price:35, defaultPrice:35, hidden:false },
-          { id:16, name:"TAFLEN Glycerin 250ml", category:"jelly", price:75, defaultPrice:75, hidden:false },
-          { id:17, name:"TAFLEN Aloe Vera Gel 150ml", category:"jelly", price:110, defaultPrice:110, hidden:false },
-          { id:18, name:"TAFLEN Cocoa Butter Jelly 200g", category:"jelly", price:90, defaultPrice:90, hidden:false },
+          // Paraffin Series
+          { id:1, name:"Parffin 500ml", category:"paraffin", price:365, defaultPrice:365, hidden:false },
+          { id:2, name:"Parffin 330ml", category:"paraffin", price:275, defaultPrice:275, hidden:false },
+          { id:3, name:"Paraffin 300ml", category:"paraffin", price:265, defaultPrice:265, hidden:false },
+          { id:4, name:"Parffin 250ml", category:"paraffin", price:230, defaultPrice:230, hidden:false },
+          { id:5, name:"Paraffin 200ml", category:"paraffin", price:220, defaultPrice:220, hidden:false },
+          { id:6, name:"Paraffin heavy 1lit", category:"paraffin", price:720, defaultPrice:720, hidden:false },
+          // Baby Line
+          { id:7, name:"Baby oil 400", category:"baby", price:340, defaultPrice:340, hidden:false },
+          { id:8, name:"Baby oil 200", category:"baby", price:220, defaultPrice:220, hidden:false },
+          { id:9, name:"Baby jelly 400", category:"baby", price:380, defaultPrice:380, hidden:false },
+          { id:10, name:"Baby jelly 350", category:"baby", price:340, defaultPrice:340, hidden:false },
+          { id:11, name:"Baby jelly 300", category:"baby", price:325, defaultPrice:325, hidden:false },
+          { id:12, name:"Baby jelly 150", category:"baby", price:200, defaultPrice:200, hidden:false },
+          // Vaseline, Glycerin & Alcohol
+          { id:13, name:"Vaseline 300", category:"jelly", price:325, defaultPrice:325, hidden:false },
+          { id:14, name:"Vaseline 250", category:"jelly", price:300, defaultPrice:300, hidden:false },
+          { id:15, name:"Vaseline 125", category:"jelly", price:185, defaultPrice:185, hidden:false },
+          { id:16, name:"Vaseline 40", category:"jelly", price:85, defaultPrice:85, hidden:false },
+          { id:17, name:"Glycerin 200", category:"jelly", price:225, defaultPrice:225, hidden:false },
+          { id:18, name:"Glycerin 150", category:"jelly", price:190, defaultPrice:190, hidden:false },
+          { id:19, name:"Glycerin 100", category:"jelly", price:125, defaultPrice:125, hidden:false },
+          { id:20, name:"Vaseline jelly 900", category:"jelly", price:750, defaultPrice:750, hidden:false },
+          { id:21, name:"Vaseline jell 1000gm", category:"jelly", price:780, defaultPrice:780, hidden:false },
+          { id:22, name:"glycerine 1000ml", category:"jelly", price:1000, defaultPrice:1000, hidden:false },
+          { id:23, name:"Alcohol", category:"jelly", price:480, defaultPrice:480, hidden:false },
         ];
 
         // Telegram Mini App handshake
