@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> 
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
     <title>Kumee Cosmo — Premium TAFLEN Wholesale</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style> 
+    <style>
         html { scroll-behavior: smooth; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
@@ -15,7 +15,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col pb-12">
 
-    <!-- Owner Notice (shown only to owner in Telegram) -->
+    <!-- Owner Notice -->
     <div id="owner-panel" class="hidden bg-slate-900 text-white p-4 border-b-2 border-amber-500 sticky top-0 z-50 shadow-lg">
         <div class="max-w-6xl mx-auto">
             <h2 class="text-sm font-black tracking-wider text-amber-400">🛠️ OWNER VIEW</h2>
@@ -47,7 +47,7 @@
         <section class="lg:col-span-2 space-y-8">
             <div class="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 flex items-center gap-3 text-xs text-emerald-950 font-medium shadow-sm">
                 <span class="text-base text-emerald-600">⚡</span>
-                <p>Adjust wholesale requirements below. Your running invoice sheet and totals calculate natively in real time.</p>
+                <p>Adjust wholesale quantities below. Your running invoice sheet and totals calculate natively in real time.</p>
             </div>
 
             <!-- Paraffin Series -->
@@ -149,15 +149,39 @@
 
     <script>
         // ── Config ────────────────────────────────────────────────────────────
-        const API_BASE   = "https://code-builder--bonafikadu15.replit.app";
-        const OWNER_ID   = 5264691339;
-        const POLL_MS    = 30000;
+        // IMPORTANT: Replace this with your published Replit app URL
+        // Example: "https://kumee-cosmo-12345.replit.app/api"
+        const API_BASE = "https://REPLACE_WITH_YOUR_REPLIT_APP.replit.app/api";
 
-        // ── State ─────────────────────────────────────────────────────────────
-        const cart = {};          // { id: { name, price, quantity, total } }
-        let   products = [];      // live product list from API
+        const OWNER_ID = 5264691339;
+        const POLL_MS  = 30000;
 
-        // ── Telegram Mini App handshake ───────────────────────────────────────
+        const cart = {};
+        let products = [];
+
+        // Fallback product list if the API is unreachable
+        const FALLBACK_PRODUCTS = [
+          { id:1, name:"TAFLEN White Paraffin 100ml", category:"paraffin", price:45, defaultPrice:45, hidden:false },
+          { id:2, name:"TAFLEN White Paraffin 200ml", category:"paraffin", price:85, defaultPrice:85, hidden:false },
+          { id:3, name:"TAFLEN White Paraffin 500ml", category:"paraffin", price:195, defaultPrice:195, hidden:false },
+          { id:4, name:"TAFLEN White Paraffin 1L", category:"paraffin", price:350, defaultPrice:350, hidden:false },
+          { id:5, name:"TAFLEN Liquid Paraffin 100ml", category:"paraffin", price:50, defaultPrice:50, hidden:false },
+          { id:6, name:"TAFLEN Liquid Paraffin 200ml", category:"paraffin", price:95, defaultPrice:95, hidden:false },
+          { id:7, name:"TAFLEN Baby Diaper Rash Cream 50g", category:"baby", price:75, defaultPrice:75, hidden:false },
+          { id:8, name:"TAFLEN Baby Powder 100g", category:"baby", price:55, defaultPrice:55, hidden:false },
+          { id:9, name:"TAFLEN Baby Oil 100ml", category:"baby", price:60, defaultPrice:60, hidden:false },
+          { id:10, name:"TAFLEN Baby Shampoo 200ml", category:"baby", price:85, defaultPrice:85, hidden:false },
+          { id:11, name:"TAFLEN Baby Lotion 200ml", category:"baby", price:80, defaultPrice:80, hidden:false },
+          { id:12, name:"TAFLEN Baby Sunscreen SPF30 50ml", category:"baby", price:120, defaultPrice:120, hidden:false },
+          { id:13, name:"TAFLEN Petroleum Jelly 100g", category:"jelly", price:40, defaultPrice:40, hidden:false },
+          { id:14, name:"TAFLEN Petroleum Jelly 200g", category:"jelly", price:70, defaultPrice:70, hidden:false },
+          { id:15, name:"TAFLEN Glycerin 100ml", category:"jelly", price:35, defaultPrice:35, hidden:false },
+          { id:16, name:"TAFLEN Glycerin 250ml", category:"jelly", price:75, defaultPrice:75, hidden:false },
+          { id:17, name:"TAFLEN Aloe Vera Gel 150ml", category:"jelly", price:110, defaultPrice:110, hidden:false },
+          { id:18, name:"TAFLEN Cocoa Butter Jelly 200g", category:"jelly", price:90, defaultPrice:90, hidden:false },
+        ];
+
+        // Telegram Mini App handshake
         if (window.Telegram?.WebApp) {
             window.Telegram.WebApp.ready();
             window.Telegram.WebApp.expand();
@@ -167,10 +191,9 @@
             }
         }
 
-        // ── Payment / receipt toggle ──────────────────────────────────────────
         function toggleReceiptUpload() {
-            const method  = document.getElementById('payment-method').value;
-            const upload  = document.getElementById('receipt-upload');
+            const method = document.getElementById('payment-method').value;
+            const upload = document.getElementById('receipt-upload');
             if (method === 'Cash on Delivery (COD)') {
                 upload.classList.add('hidden');
                 upload.value = '';
@@ -179,7 +202,6 @@
             }
         }
 
-        // ── Build a product card ──────────────────────────────────────────────
         function buildCard(product) {
             const priceChanged = product.price !== product.defaultPrice;
             return `
@@ -201,7 +223,6 @@
             </div>`;
         }
 
-        // ── Render all products from API data ─────────────────────────────────
         function renderProducts() {
             const grids = { paraffin: '', baby: '', jelly: '' };
             let anyParaffin = false, anyBaby = false, anyJelly = false;
@@ -222,20 +243,18 @@
             document.getElementById('section-jelly').style.display    = anyJelly    ? '' : 'none';
         }
 
-        // ── Fetch live products from backend ──────────────────────────────────
         async function fetchProducts() {
             try {
-                const res  = await fetch(API_BASE + '/api/products', { cache: 'no-store' });
-                if (!res.ok) return;
-                const data = await res.json();
-                products = data;
+                const res = await fetch(API_BASE + '/products', { cache: 'no-store' });
+                if (!res.ok) {
+                    console.warn('Products API failed, using fallback');
+                    products = FALLBACK_PRODUCTS;
+                } else {
+                    products = await res.json();
+                }
 
-                // Remove hidden items from cart automatically
-                data.forEach(p => {
-                    if (p.hidden && cart[p.id]) {
-                        delete cart[p.id];
-                    }
-                    // Update price in cart if changed
+                products.forEach(p => {
+                    if (p.hidden && cart[p.id]) delete cart[p.id];
                     if (cart[p.id]) {
                         cart[p.id].price = p.price;
                         cart[p.id].total = p.price * cart[p.id].quantity;
@@ -246,10 +265,12 @@
                 updateInvoice();
             } catch (e) {
                 console.error('Failed to fetch products:', e);
+                products = FALLBACK_PRODUCTS;
+                renderProducts();
+                updateInvoice();
             }
         }
 
-        // ── Quantity change handler ───────────────────────────────────────────
         function handleQtyChange(input) {
             const card  = input.closest('[data-id]');
             const id    = card.dataset.id;
@@ -265,14 +286,12 @@
             updateInvoice();
         }
 
-        // ── Rebuild the invoice panel ─────────────────────────────────────────
         function updateInvoice() {
-            const cartList   = document.getElementById('cart-list');
-            const emptyMsg   = document.getElementById('empty-cart-msg');
-            const totalRow   = document.getElementById('running-total-row');
-            const totalVal   = document.getElementById('running-total-value');
+            const cartList = document.getElementById('cart-list');
+            const emptyMsg = document.getElementById('empty-cart-msg');
+            const totalRow = document.getElementById('running-total-row');
+            const totalVal = document.getElementById('running-total-value');
 
-            // Clear old rows
             cartList.querySelectorAll('.cart-row').forEach(r => r.remove());
 
             let totalUnits = 0, grandTotal = 0, variety = 0;
@@ -308,7 +327,6 @@
             document.getElementById('invoice-grand-total').textContent = grandTotal.toLocaleString() + ' ETB';
         }
 
-        // ── Submit order through backend API ──────────────────────────────────
         async function submitOrder() {
             const name     = document.getElementById('client-name').value.trim();
             const phone    = document.getElementById('client-phone').value.trim();
@@ -340,7 +358,7 @@
                     receiptMimeType = file.type;
                 }
 
-                const res = await fetch(API_BASE + '/api/orders', {
+                const res = await fetch(API_BASE + '/orders', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -373,7 +391,7 @@
             }
         }
 
-        // ── Boot ──────────────────────────────────────────────────────────────
+        // Boot
         fetchProducts();
         setInterval(fetchProducts, POLL_MS);
     </script>
